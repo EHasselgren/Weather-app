@@ -1,4 +1,4 @@
-async function fetchWeatherFromSMHI(lat, lon) {
+export async function fetchWeatherFromSMHI(lat, lon) {
     // SMHI API URL för 10-dagars prognos
     const url = `https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/${lon}/lat/${lat}/data.json`;
     
@@ -31,7 +31,7 @@ async function fetchWeatherFromSMHI(lat, lon) {
 }
 
 // Funktion för att översätta SMHI:s symbolkoder till text
-function interpretCondition(symbolCode) {
+export function interpretCondition(symbolCode) {
     const conditions = {
         1: "Klart",
         2: "Nästan klart",
@@ -60,7 +60,7 @@ function interpretCondition(symbolCode) {
 }
 
 // Funktion för att hämta användarens plats och hämta väderdata för den platsen
-function getUserLocationAndFetchWeather() {
+export function getUserLocationAndFetchWeather() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (position) => {
             const lat = position.coords.latitude;
