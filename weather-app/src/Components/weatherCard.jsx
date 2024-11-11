@@ -6,7 +6,7 @@ function WeatherCard() {
     return (
       <Container className="d-flex justify-content-center align-items-center">
         <Card style={{ width: '18rem' }}>
-          <Card.Img variant="top" src="holder.js/100px180" />
+          {/* <Card.Img variant="top" src="holder.js/100px180" /> */}
           <Card.Body>
             <Card.Title>Card Title</Card.Title>
             <Card.Text>
