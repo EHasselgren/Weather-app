@@ -3,9 +3,8 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Spinner from 'react-bootstrap/Spinner';
-import { fetchWeatherFromSMHI
+import { fetchWeatherFromSMHI } from '../utils/WeatherUtils';
 
- } from '../utils/WeatherUtils';
 function WeatherCard() {
     const [weather, setWeather] = useState(null);
     const [loading, setLoading] = useState(true);
