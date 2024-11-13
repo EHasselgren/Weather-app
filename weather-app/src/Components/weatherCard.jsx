@@ -12,7 +12,6 @@ import '../styles/DayNightBackground.css'
 
 
 import { fetchWeatherFromSMHI } from '../utils/WeatherUtils';
-
 const cities = {
     Stockholm: { lat: 59.3293, lon: 18.0686 },
     Göteborg: { lat: 57.7089, lon: 11.9746 },
