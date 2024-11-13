@@ -1,8 +1,8 @@
 import { Button } from "react-bootstrap";
 
 export const ActionButtons = () => (
-  <div className="d-flex gap-2">
-    <Button variant="primary" onClick={() => window.location.reload()}>
+  <div className="button-group">
+        <Button variant="primary" onClick={() => window.location.reload()}>
       Uppdatera
     </Button>
     <Button

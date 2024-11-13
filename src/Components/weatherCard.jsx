@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { Card } from 'react-bootstrap';
 import { cities } from "../data/Cities";
 import { useWeather } from '../hooks/useWeather';
@@ -26,7 +26,7 @@ function WeatherCard() {
   return (
     <div className="weather-card-container">
       <DayNightRotation />
-      <Card style={{ width: "18rem", position: "relative", zIndex: 1 }}>
+      <Card className="position-relative" style={{ zIndex: 1 }}>
         <Card.Body>
           <Card.Title>Vädret nu</Card.Title>
           <GoogleMap lat={city.lat} lon={city.lon} />
