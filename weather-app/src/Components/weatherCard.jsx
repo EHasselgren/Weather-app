@@ -119,7 +119,9 @@ function WeatherCard() {
     }
 
     return (
-        <Container className="d-flex justify-content-center align-items-center">
+        <Container className="d-flex justify-content-center  align-items-center">
+                    <div className="day-night-container">
+
             <img
                 src={dayNightImage}
                 alt="Day and Night Background"
@@ -176,6 +178,7 @@ function WeatherCard() {
                     </div>
                 </Card.Body>
             </Card>
+            </div>
         </Container>
     );
 }
