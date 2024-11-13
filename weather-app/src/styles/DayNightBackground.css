@@ -1,0 +1,34 @@
+.day-night-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.day-night-image {
+    position: absolute;
+    top: 290px; 
+    width: 330px; 
+    height: 330px;
+    border-radius: 50%;
+    opacity: 0.7;
+    transition: transform 1s linear;
+}
+
+
+@media (max-width: 768px) {
+    .day-night-image {
+        top: 300px; 
+        width: 280px; 
+        height: 280px;
+    }
+}
+
+@media (max-width: 480px) {
+    .day-night-image {
+        top: 200px; 
+        width: 230px; 
+        height: 230px;
+    }
+}

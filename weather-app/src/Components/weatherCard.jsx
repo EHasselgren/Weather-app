@@ -5,6 +5,12 @@ import Container from 'react-bootstrap/Container';
 import Spinner from 'react-bootstrap/Spinner';
 import Form from 'react-bootstrap/Form';
 import '../styles/weatherCard.css';
+import dayNightImage from '../media/phase.v1.png';
+import '../styles/DayNightBackground.css'
+
+
+
+
 import { fetchWeatherFromSMHI } from '../utils/WeatherUtils';
 
 const cities = {
@@ -42,6 +48,8 @@ function WeatherCard() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedCity, setSelectedCity] = useState("Stockholm");
+    const [rotation, setRotation] = useState(0);
+    
 
     const updateWeatherData = async (lat, lon) => {
         setLoading(true);
@@ -55,14 +63,35 @@ function WeatherCard() {
         setLoading(false);
     };
 
+    
+    const updateRotation = () => {
+        const hour = new Date().getHours();
+    
+        
+        const hoursSinceNoon = (hour >= 12) ? hour - 12 : hour + 12; 
+        const newRotation = (hoursSinceNoon / 24) * 360; 
+    
+        setRotation(newRotation);
+    };
+    
     useEffect(() => {
-        const city = cities[selectedCity];
+        updateRotation(); // Set initial rotation
+        const interval = setInterval(updateRotation, 60 * 60 * 1000); 
+    
+        return () => clearInterval(interval); 
+    }, []);
+    
+
+    useEffect(() => {
+        const city = cities[selectedCity]; 
         updateWeatherData(city.lat, city.lon);
     }, [selectedCity]);
 
     const handleCityChange = (e) => {
         setSelectedCity(e.target.value);
     };
+
+    
 
     if (loading) {
         return (
@@ -92,11 +121,16 @@ function WeatherCard() {
 
     return (
         <Container className="d-flex justify-content-center align-items-center">
+            <img
+                src={dayNightImage}
+                alt="Day and Night Background"
+                className="day-night-image"
+                style={{ transform: `rotate(${rotation}deg)` }}
+            />
             <Card style={{ width: '18rem' }}>
                 <Card.Body>
                     <Card.Title>Vädret nu</Card.Title>
 
-                    {/* Embedded Map */}
                     <iframe
                         title="City Map"
                         width="100%"
@@ -106,7 +140,6 @@ function WeatherCard() {
                         allowFullScreen
                     ></iframe>
 
-                    {/* Dropdown for selecting city */}
                     <Form.Select
                         aria-label="Select city"
                         className="my-3"
