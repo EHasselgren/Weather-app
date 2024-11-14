@@ -1,5 +1,5 @@
 import "./App.css";
-import WeatherCard from "./Components/weatherCard";
+import { WeatherCard } from "./Components/WeatherCard/weatherCard";
 import './styles/weatherCard.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 function App() {
