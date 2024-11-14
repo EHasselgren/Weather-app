@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 const GeocodingComponent = () => {
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState("");
   const [coordinates, setCoordinates] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -9,17 +9,19 @@ const GeocodingComponent = () => {
   const geocodeWithNominatim = async (searchAddress) => {
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchAddress)}`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          searchAddress
+        )}`
       );
       const data = await response.json();
 
       if (data.length === 0) {
-        throw new Error('No results found');
+        throw new Error("No results found");
       }
 
       return {
         lat: data[0].lat,
-        lng: data[0].lon
+        lng: data[0].lon,
       };
     } catch (err) {
       throw new Error(err.message);
@@ -53,15 +55,11 @@ const GeocodingComponent = () => {
           required
         />
         <button type="submit" disabled={loading}>
-          {loading ? 'Searching...' : 'Search'}
+          {loading ? "Searching..." : "Search"}
         </button>
       </form>
 
-      {error && (
-        <div style={{ color: 'red' }}>
-          Error: {error}
-        </div>
-      )}
+      {error && <div style={{ color: "red" }}>Error: {error}</div>}
 
       {coordinates && (
         <div>
