@@ -1,3 +1,15 @@
+import {
+  faSun,
+  faCloudSun,
+  faCloud,
+  faSmog,
+  faCloudRain,
+  faCloudShowersHeavy,
+  faBolt,
+  faSnowflake,
+  faCloudBolt
+} from '@fortawesome/free-solid-svg-icons';
+
 export async function fetchWeatherFromSMHI(lat, lon) {
   // SMHI API URL för 10-dagars prognos
   const url = `https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/${lon}/lat/${lat}/data.json`;
@@ -32,28 +44,28 @@ export async function fetchWeatherFromSMHI(lat, lon) {
 // Funktion för att översätta SMHI:s symbolkoder till text
 export function interpretCondition(symbolCode) {
   const conditions = {
-    1: "Klart",
-    2: "Nästan klart",
-    3: "Halvklart",
-    4: "Molnigt",
-    5: "Mycket moln",
-    6: "Mulet",
-    7: "Dimma",
-    8: "Lätta regnskurar",
-    9: "Regnskurar",
-    10: "Kraftiga regnskurar",
-    11: "Åskskurar",
-    12: "Lätta snöbyar",
-    13: "Snöbyar",
-    14: "Kraftiga snöbyar",
-    15: "Lätt regn",
-    16: "Regn",
-    17: "Kraftigt regn",
-    18: "Åska",
-    19: "Lätt snöfall",
-    20: "Snöfall",
-    21: "Kraftigt snöfall",
-    // fler symbolkoder kan läggas till vid behov
+    1: { text: "Klart", icon: faSun },
+    2: { text: "Nästan klart", icon: faSun },
+    3: { text: "Halvklart", icon: faCloudSun },
+    4: { text: "Molnigt", icon: faCloud },
+    5: { text: "Mycket moln", icon: faCloud },
+    6: { text: "Mulet", icon: faCloud },
+    7: { text: "Dimma", icon: faSmog },
+    8: { text: "Lätta regnskurar", icon: faCloudRain },
+    9: { text: "Regnskurar", icon: faCloudRain },
+    10: { text: "Kraftiga regnskurar", icon: faCloudShowersHeavy },
+    11: { text: "Åskskurar", icon: faCloudBolt },
+    12: { text: "Lätta snöbyar", icon: faSnowflake },
+    13: { text: "Snöbyar", icon: faSnowflake },
+    14: { text: "Kraftiga snöbyar", icon: faSnowflake },
+    15: { text: "Lätt regn", icon: faCloudRain },
+    16: { text: "Regn", icon: faCloudRain },
+    17: { text: "Kraftigt regn", icon: faCloudShowersHeavy },
+    18: { text: "Åska", icon: faBolt },
+    19: { text: "Lätt snöfall", icon: faSnowflake },
+    20: { text: "Snöfall", icon: faSnowflake },
+    21: { text: "Kraftigt snöfall", icon: faSnowflake },
   };
-  return conditions[symbolCode] || "Okänt väderförhållande";
+
+  return conditions[symbolCode] || { text: "Okänt väderförhållande", icon: faCloud };
 }
