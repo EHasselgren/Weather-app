@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { WeatherCard } from "./Components/weatherCard";
+import { WeatherCard } from "./components/weatherCard";
 import { cities } from "./data/cities";
 import { fetchWeatherFromSMHI } from "./utils/WeatherUtils";
 import "./App.css";

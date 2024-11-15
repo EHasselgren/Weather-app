@@ -6,7 +6,7 @@ export const CityMap = ({ lat, lon }) => {
     const params = {
       center: `${lat},${lon}`,
       zoom: '10',
-      size: '255x200', 
+      size: '288x200', 
       language: 'sv', 
       key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY
     };

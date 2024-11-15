@@ -45,7 +45,7 @@ export const WeatherCard = ({
         className="day-night-image"
         style={{ transform: `rotate(${rotation}deg)` }}
       />
-      <Card style={{ width: "18rem" }}>
+      <Card style={{ width: "20rem" }}>
         <Card.Body>
           <Card.Title>Vädret nu</Card.Title>
           <CityMap
