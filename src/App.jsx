@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { WeatherCard } from "./components/weatherCard";
 import { cities } from "./data/cities";
 import { fetchWeatherFromSMHI } from "./utils/WeatherUtils";
+import SeasonBackground from "./Components/SeasonBackground";
 import "./App.css";
 import "./styles/weatherCard.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -38,14 +39,17 @@ function App() {
   };
 
   return (
-    <div className={`center-content ${getTemperatureClass()}`}>
-      <WeatherCard
-        weather={weather}
-        loading={loading}
-        error={error}
-        selectedCity={selectedCity}
-        setSelectedCity={setSelectedCity}
-      />
+    <div>
+      <SeasonBackground />
+      <div className={`center-content ${getTemperatureClass()}`}>
+        <WeatherCard
+          weather={weather}
+          loading={loading}
+          error={error}
+          selectedCity={selectedCity}
+          setSelectedCity={setSelectedCity}
+        />
+      </div>
     </div>
   );
 }
