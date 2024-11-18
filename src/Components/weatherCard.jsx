@@ -4,7 +4,6 @@ import { cities } from "../data/cities";
 import { CityMap } from "../components/CityMap";
 import { CitySelector } from "./CitySelector";
 import { ErrorDisplay } from "./ErrorDisplay";
-import { ActionButtons } from "./ActionButtons";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { WeatherInfo } from "./WeatherInfo";
 import { weatherCardProps } from "../types/propTypes";
@@ -61,7 +60,6 @@ export const WeatherCard = ({
             windSpeed={weather.windSpeed}
             condition={weather.condition}
           />
-          <ActionButtons />
         </Card.Body>
       </Card>
     </Container>
