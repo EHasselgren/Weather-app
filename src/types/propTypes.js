@@ -32,3 +32,31 @@ export const weatherCardProps = {
   selectedCity: PropTypes.string.isRequired,
   setSelectedCity: PropTypes.func.isRequired,
 };
+
+// DailyForecast PropTypes
+const dayPropType = PropTypes.shape({
+  dt: PropTypes.number.isRequired,
+  temp: PropTypes.shape({
+    max: PropTypes.number.isRequired,
+    min: PropTypes.number.isRequired
+  }).isRequired,
+  weather: PropTypes.arrayOf(PropTypes.shape({
+    description: PropTypes.string.isRequired
+  })).isRequired,
+  pop: PropTypes.number
+});
+
+export const DailyForecast = {
+  data: PropTypes.arrayOf(dayPropType).isRequired,
+  hourlyData: PropTypes.arrayOf(PropTypes.shape({
+    dt: PropTypes.number.isRequired,
+    temp: PropTypes.number.isRequired
+  })).isRequired
+};
+
+
+ export const TemperatureChart = {
+  hourlyData: PropTypes.arrayOf(PropTypes.shape({
+    temp: PropTypes.number.isRequired
+  })).isRequired
+};
