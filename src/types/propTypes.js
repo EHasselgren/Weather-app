@@ -20,8 +20,13 @@ export const errorDisplayProps = {
   message: PropTypes.string.isRequired,
 };
 
+export const weatherNavProps = {
+  activeKey: PropTypes.string.isRequired,
+  onSelect: PropTypes.func.isRequired,
+};
+
 export const weatherCardProps = {
-  weather: PropTypes.shape(weatherInfoProps),
+  weather: PropTypes.shape(weatherInfoProps).isRequired,
   loading: PropTypes.bool.isRequired,
   error: PropTypes.string,
   selectedCity: PropTypes.string.isRequired,

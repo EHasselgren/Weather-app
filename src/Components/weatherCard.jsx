@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Card, Container } from "react-bootstrap";
+import { Card, Container, Tab } from "react-bootstrap";
 import { cities } from "../data/cities";
 import { CityMap } from "../components/CityMap";
 import { CitySelector } from "./CitySelector";
@@ -7,6 +7,7 @@ import { ErrorDisplay } from "./ErrorDisplay";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { WeatherInfo } from "./WeatherInfo";
 import { weatherCardProps } from "../types/propTypes";
+import { WeatherNav } from './WeatherNav';
 import dayNightImage from "../media/phase.v1.png";
 import "../styles/weatherCard.css";
 import "../styles/DayNightBackground.css";
@@ -19,6 +20,7 @@ export const WeatherCard = ({
   setSelectedCity,
 }) => {
   const [rotation, setRotation] = useState(0);
+  const [activeTab, setActiveTab] = useState('current');
 
   const updateRotation = () => {
     const hour = new Date().getHours();
@@ -46,20 +48,31 @@ export const WeatherCard = ({
       />
       <Card style={{ width: "20rem" }}>
         <Card.Body>
-          <Card.Title>Vädret nu</Card.Title>
-          <CityMap
-            lat={cities[selectedCity].lat}
-            lon={cities[selectedCity].lon}
-          />
-          <CitySelector
-            selectedCity={selectedCity}
-            onChange={(e) => setSelectedCity(e.target.value)}
-          />
-          <WeatherInfo
-            temperature={weather.temperature}
-            windSpeed={weather.windSpeed}
-            condition={weather.condition}
-          />
+          <Tab.Container activeKey={activeTab} onSelect={setActiveTab}>
+            <WeatherNav activeKey={activeTab} onSelect={setActiveTab} />
+
+            <CitySelector
+              selectedCity={selectedCity}
+              onChange={(e) => setSelectedCity(e.target.value)}
+            />
+
+            <Tab.Content>
+              <Tab.Pane eventKey="current">
+                <CityMap
+                  lat={cities[selectedCity].lat}
+                  lon={cities[selectedCity].lon}
+                />
+                <WeatherInfo
+                  temperature={weather.temperature}
+                  windSpeed={weather.windSpeed}
+                  condition={weather.condition}
+                />
+              </Tab.Pane>
+              <Tab.Pane eventKey="forecast">
+                  hejhej
+              </Tab.Pane>
+            </Tab.Content>
+          </Tab.Container>
         </Card.Body>
       </Card>
     </Container>
@@ -69,3 +82,4 @@ export const WeatherCard = ({
 WeatherCard.propTypes = weatherCardProps;
 
 export default WeatherCard;
+
