@@ -1,0 +1,264 @@
+/* General settings for the background */
+body {
+    margin: 0;
+    overflow: hidden;
+  }
+  
+  .background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+  }
+  
+  /* SPRING - Flowers with random floating movement */
+  .background.spring .flower {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    animation: floatUp 10s linear infinite;
+    opacity: 0.9;
+  }
+  
+  .background.spring .flower1 {
+    background-image: url('../media/flower1.png');
+    top: -10%;
+    left: 20%;
+    animation-delay: 0s;
+  }
+  
+  .background.spring .flower2 {
+    background-image: url('../media/flower2.png');
+    top: -20%;
+    left: 50%;
+    animation-delay: 2s;
+  }
+  
+  .background.spring .flower3 {
+    background-image: url('../media/flower3.png');
+    top: -30%;
+    left: 70%;
+    animation-delay: 4s;
+  }
+  
+  @keyframes floatUp {
+    0% {
+      transform: translateY(0) translateX(0) scale(1);
+      opacity: 1;
+    }
+    25% {
+      transform: translateY(-150px) translateX(-10px) scale(1.1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: translateY(-250px) translateX(5px) scale(1.2);
+      opacity: 0.7;
+    }
+    75% {
+      transform: translateY(-350px) translateX(-5px) scale(1);
+      opacity: 0.6;
+    }
+    100% {
+      transform: translateY(-450px) translateX(10px) scale(1);
+      opacity: 0;
+    }
+  }
+  
+  /* SUMMER - Butterflies with random fluttering and flying movement */
+  .background.summer .butterfly {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    animation: flyAcross 12s linear infinite;
+    opacity: 1;
+  }
+  
+  .background.summer .butterfly1 {
+    background-image: url('../media/butterfly1.png');
+    top: -10%;
+    left: -50px;
+    animation-delay: 0s;
+    animation-duration: 10s;
+  }
+  
+  .background.summer .butterfly2 {
+    background-image: url('../media/butterfly2.png');
+    top: 30%;
+    left: -60px;
+    animation-delay: 2s;
+    animation-duration: 14s;
+  }
+  
+  .background.summer .butterfly3 {
+    background-image: url('../media/butterfly3.png');
+    top: 60%;
+    left: -70px;
+    animation-delay: 4s;
+    animation-duration: 16s;
+  }
+  
+  @keyframes flyAcross {
+    0% {
+      transform: translateX(0) rotate(0deg);
+      opacity: 1;
+    }
+    20% {
+      transform: translateX(10vw) rotate(45deg);
+      opacity: 1;
+    }
+    40% {
+      transform: translateX(20vw) rotate(90deg);
+      opacity: 0.9;
+    }
+    60% {
+      transform: translateX(40vw) rotate(180deg);
+      opacity: 0.7;
+    }
+    80% {
+      transform: translateX(60vw) rotate(270deg);
+      opacity: 0.6;
+    }
+    100% {
+      transform: translateX(100vw) rotate(360deg);
+      opacity: 0;
+    }
+  }
+  
+  /* AUTUMN - Leaves with random falling and rotating movement */
+  .background.autumn .leaf {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    animation: fallLeaves 12s linear infinite; /* Increased duration for smoother fall */
+    opacity: 0.9;
+  }
+  
+  .background.autumn .leaf1 {
+    background-image: url('../media/leaf1.png');
+    top: -10%;
+    left: 10%;
+    animation-delay: 0s;
+  }
+  
+  .background.autumn .leaf2 {
+    background-image: url('../media/leaf2.png');
+    top: -10%;
+    left: 30%;
+    animation-delay: 2s;
+  }
+  
+  .background.autumn .leaf3 {
+    background-image: url('../media/leaf3.png');
+    top: -10%;
+    left: 50%;
+    animation-delay: 4s;
+  }
+  
+  .background.autumn .leaf4 {
+    background-image: url('../media/leaf4.png');
+    top: -10%;
+    left: 70%;
+    animation-delay: 6s;
+  }
+  
+  @keyframes fallLeaves {
+    0% {
+      transform: translateY(0) rotate(0deg);
+      opacity: 1;
+    }
+    20% {
+      transform: translateY(15vh) translateX(5px) rotate(15deg);
+      opacity: 1;
+    }
+    40% {
+      transform: translateY(35vh) translateX(-10px) rotate(45deg);
+      opacity: 0.9;
+    }
+    60% {
+      transform: translateY(55vh) translateX(15px) rotate(90deg);
+      opacity: 0.8;
+    }
+    80% {
+      transform: translateY(80vh) translateX(-10px) rotate(135deg);
+      opacity: 0.7;
+    }
+    100% {
+      transform: translateY(100vh) translateX(5px) rotate(180deg);
+      opacity: 0;
+    }
+  }
+  
+  /* WINTER - Snowflakes with random falling and rotating movement */
+  .background.winter .snowflake {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    animation: snowFall 15s linear infinite; /* Increased duration for smoother fall */
+    opacity: 0.8;
+  }
+  
+  .background.winter .snowflake1 {
+    background-image: url('../media/snowflake1.png');
+    top: -10%;
+    left: 5%;
+    animation-delay: 0s;
+  }
+  
+  .background.winter .snowflake2 {
+    background-image: url('../media/snowflake2.png');
+    top: -10%;
+    left: 20%;
+    animation-delay: 2s;
+  }
+  
+  .background.winter .snowflake3 {
+    background-image: url('../media/snowflake3.png');
+    top: -10%;
+    left: 40%;
+    animation-delay: 4s;
+  }
+  
+  .background.winter .snowflake4 {
+    background-image: url('../media/snowflake4.png');
+    top: -10%;
+    left: 60%;
+    animation-delay: 6s;
+  }
+  
+  @keyframes snowFall {
+    0% {
+      transform: translateY(0) rotate(0deg);
+      opacity: 1;
+    }
+    20% {
+      transform: translateY(15vh) translateX(5px) rotate(15deg);
+      opacity: 1;
+    }
+    40% {
+      transform: translateY(35vh) translateX(-10px) rotate(45deg);
+      opacity: 0.9;
+    }
+    60% {
+      transform: translateY(55vh) translateX(15px) rotate(90deg);
+      opacity: 0.8;
+    }
+    80% {
+      transform: translateY(80vh) translateX(-10px) rotate(135deg);
+      opacity: 0.7;
+    }
+    100% {
+      transform: translateY(100vh) translateX(5px) rotate(180deg);
+      opacity: 0;
+    }
+  }
+  
