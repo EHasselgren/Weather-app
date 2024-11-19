@@ -71,7 +71,7 @@ const staticWeatherData = {
         className="day-night-image"
         style={{ transform: `rotate(${rotation}deg)` }}
       />
-      <Card style={{ width: "30rem" }}>
+      <Card style={{ width: "35rem" }}>
         <Card.Body>
           <Tab.Container activeKey={activeTab} onSelect={setActiveTab}>
             <WeatherNav activeKey={activeTab} onSelect={setActiveTab} />
