@@ -12,6 +12,5 @@
   width: 330px;
   height: 330px;
   border-radius: 50%;
-  opacity: 0.7;
   transition: transform 1s linear;
 }
