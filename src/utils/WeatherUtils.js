@@ -11,33 +11,36 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 export async function fetchWeatherFromSMHI(lat, lon) {
-  // SMHI API URL för 10-dagars prognos
   const url = `https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/${lon}/lat/${lat}/data.json`;
 
   try {
     const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
     const data = await response.json();
 
-    // Hämta den första tidsperioden i prognosen (just nu)
     const forecast = data.timeSeries[0];
-
-    // Extrahera temperatur, vindhastighet och väderförhållande
     let temperature, windSpeed, condition;
 
     forecast.parameters.forEach((param) => {
-      if (param.name === "t") temperature = param.values[0]; // Temperatur i Celsius
-      if (param.name === "ws") windSpeed = param.values[0]; // Vindhastighet i m/s
-      if (param.name === "Wsymb2") condition = param.values[0]; // Väderförhållande (symbolkod)
+      if (param.name === "t") temperature = param.values[0];
+      if (param.name === "ws") windSpeed = param.values[0];
+      if (param.name === "Wsymb2") condition = String(param.values[0]); 
     });
 
-    // Returnera datan som ett objekt
+    if (!temperature || !windSpeed || !condition) {
+      throw new Error("Missing required weather parameters");
+    }
+
     return {
       temperature,
       windSpeed,
-      condition,
+      condition
     };
   } catch (error) {
-    console.error("Fel vid hämtning av väderdata från SMHI:", error);
+    console.error("Error fetching weather data from SMHI:", error);
+    throw error; 
   }
 }
 
