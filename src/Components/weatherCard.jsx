@@ -13,7 +13,7 @@ import dayNightImage from "../media/phase.v1.png";
 import "../styles/weatherCard.css";
 import "../styles/DayNightBackground.css";
 
-const API_KEY = import.meta.env.OPEN_WEATHER_API_KEY;
+const API_KEY = import.meta.env.VITE_OPEN_WEATHER_API_KEY;
 
 export const WeatherCard = ({
   weather,

@@ -2,14 +2,28 @@ import PropTypes from "prop-types";
 import { weatherInfoProps } from "../../types/propTypes";
 
 const TemperatureChart = ({ hourlyData }) => {
-  const temperatures = hourlyData.map(hour => hour.temp);
+  const validHourlyData = hourlyData.filter(hour => 
+    hour && typeof hour.temp === 'number' && !isNaN(hour.temp)
+  );
+
+  if (validHourlyData.length === 0) {
+    return (
+      <div className="temperature-chart">
+        <h2>Temperature Variation</h2>
+        <div className="chart-container">
+          <p>No temperature data available for this period</p>
+        </div>
+      </div>
+    );
+  }
+
+  const temperatures = validHourlyData.map(hour => hour.temp);
   const minTemp = Math.floor(Math.min(...temperatures));
   const maxTemp = Math.ceil(Math.max(...temperatures));
-  const range = maxTemp - minTemp;
+  const range = maxTemp - minTemp || 1;
 
-  const points = hourlyData.map((hour, index) => {
-    // Changed from (index / 23) to (index / (hourlyData.length - 1))
-    const x = (index / (hourlyData.length - 1)) * 100;
+  const points = validHourlyData.map((hour, index) => {
+    const x = (index / (validHourlyData.length - 1)) * 100;
     const y = 100 - ((hour.temp - minTemp) / range) * 100;
     return `${x},${y}`;
   });
@@ -23,12 +37,20 @@ const TemperatureChart = ({ hourlyData }) => {
     "97,100"
   ].join(" ");
 
+  // Generate time labels based on actual data
+  const timeLabels = validHourlyData.map(hour => {
+    const date = new Date(hour.dt * 1000);
+    return date.getHours();
+  });
+
+  const firstHour = timeLabels[0];
+  const lastHour = timeLabels[timeLabels.length - 1];
+
   return (
     <div className="temperature-chart">
       <h2>Temperature Variation</h2>
       <div className="chart-container">
         <svg className="chart-svg" preserveAspectRatio="none">
-          {/* Grid lines */}
           <g>
             {Array.from({ length: 6 }, (_, i) => (
               <line
@@ -43,7 +65,6 @@ const TemperatureChart = ({ hourlyData }) => {
             ))}
           </g>
 
-          {/* Temperature scale */}
           <g transform="translate(25, 10)">
             {Array.from({ length: 6 }, (_, i) => {
               const temp = maxTemp - (i * (range / 5));
@@ -61,7 +82,6 @@ const TemperatureChart = ({ hourlyData }) => {
             })}
           </g>
 
-          {/* Temperature curve with gradient fill */}
           <g transform="translate(30, 10)">
             <defs>
               <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
@@ -70,13 +90,11 @@ const TemperatureChart = ({ hourlyData }) => {
               </linearGradient>
             </defs>
 
-            {/* Gradient fill */}
             <polygon
               points={fillPoints}
               fill="url(#gradient)"
             />
 
-            {/* Temperature line */}
             <polyline
               points={points.map((point) => {
                 const [x, y] = point.split(',');
@@ -89,7 +107,6 @@ const TemperatureChart = ({ hourlyData }) => {
               strokeLinejoin="round"
             />
 
-            {/* Data points */}
             {points.map((point, i) => {
               const [x, y] = point.split(',');
               return (
@@ -110,11 +127,11 @@ const TemperatureChart = ({ hourlyData }) => {
       </div>
 
       <div className="time-labels">
-        <span>00</span>
-        <span>06</span>
-        <span>12</span>
-        <span>18</span>
-        <span>24</span>
+        <span>{firstHour}:00</span>
+        <span>{Math.round((lastHour - firstHour) * 0.25) + firstHour}:00</span>
+        <span>{Math.round((lastHour - firstHour) * 0.5) + firstHour}:00</span>
+        <span>{Math.round((lastHour - firstHour) * 0.75) + firstHour}:00</span>
+        <span>{lastHour}:00</span>
       </div>
     </div>
   );

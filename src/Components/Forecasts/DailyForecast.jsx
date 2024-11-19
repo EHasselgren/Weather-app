@@ -71,11 +71,16 @@ export const DailyForecast = ({ data, hourlyData }) => {
   };
 
   const getHourlyDataForDay = (dayIndex) => {
-    const startOfDay = dayIndex * 24;
-    const endOfDay = startOfDay + 24;
-    return hourlyData.slice(startOfDay, endOfDay);
+    if (!Array.isArray(hourlyData)) return [];
+    
+    const dayStart = new Date(data[dayIndex].dt * 1000).setHours(0, 0, 0, 0);
+    const dayEnd = new Date(data[dayIndex].dt * 1000).setHours(23, 59, 59, 999);
+    
+    return hourlyData.filter(hour => {
+      const hourTime = hour.dt * 1000;
+      return hourTime >= dayStart && hourTime <= dayEnd;
+    });
   };
-
   return (
     <div className="daily-forecast">
       <div className="table-responsive">
