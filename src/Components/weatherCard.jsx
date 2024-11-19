@@ -7,8 +7,8 @@ import { ErrorDisplay } from "./ErrorDisplay";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { WeatherInfo } from "./WeatherInfo";
 import { weatherCardProps } from "../types/propTypes";
-import { WeatherNav } from './WeatherNav';
-import { DailyForecast } from '../components/Forecasts/DailyForecast';
+import { WeatherNav } from "./WeatherNav";
+import { DailyForecast } from "../components/Forecasts/DailyForecast";
 import dayNightImage from "../media/phase.v1.png";
 import "../styles/weatherCard.css";
 import "../styles/DayNightBackground.css";
@@ -23,11 +23,10 @@ export const WeatherCard = ({
   setSelectedCity,
 }) => {
   const [rotation, setRotation] = useState(0);
-  const [activeTab, setActiveTab] = useState('current');
+  const [activeTab, setActiveTab] = useState("current");
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
- 
 
   const updateRotation = () => {
     const hour = new Date().getHours();
@@ -36,7 +35,7 @@ export const WeatherCard = ({
     setRotation(newRotation);
   };
 
-  const fetchWeather = async (lat,lon) => {
+  const fetchWeather = async (lat, lon) => {
     try {
       setLoading(true);
       setError(null);
@@ -44,16 +43,18 @@ export const WeatherCard = ({
       const response = await fetch(
         `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,alerts&units=metric&appid=${API_KEY}`
       );
-      
+
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        throw new Error(
+          `HTTP error! status: ${response.status}, message: ${errorText}`
+        );
       }
-      
+
       const data = await response.json();
       setWeatherData(data);
     } catch (error) {
-      console.error('Detailed Fetch Error:', error);
+      console.error("Detailed Fetch Error:", error);
       setError(error.message);
     } finally {
       setLoading(false);
@@ -62,20 +63,18 @@ export const WeatherCard = ({
 
   useEffect(() => {
     updateRotation();
-     // Get coordinates from the selected city
-     const { lat, lon } = cities[selectedCity];
-     fetchWeather(lat, lon);
+    const { lat, lon } = cities[selectedCity];
+    fetchWeather(lat, lon);
     const interval = setInterval(updateRotation, 60 * 60 * 1000);
     return () => clearInterval(interval);
-  }, [selectedCity]); // Add selectedCity as a dependency
+  }, [selectedCity]);
 
-  
-  
-  // Show loading state while fetching data
   if (externalLoading || loading) return <LoadingSpinner />;
-  
-  // Show error state if there's an error
-  if (externalError || error) return <ErrorDisplay message={externalError || error} />;
+
+  if (externalError || error)
+    return <ErrorDisplay message={externalError || error} />;
+
+  if (!weather) return <div>Loading weather data...</div>;
 
   return (
     <Container className="d-flex justify-content-center align-items-center">
@@ -109,9 +108,19 @@ export const WeatherCard = ({
               </Tab.Pane>
               <Tab.Pane eventKey="forecast">
                 {weatherData && (
-                  <DailyForecast 
-                    data={weatherData.daily.slice(0, 24)}
-                    hourlyData={weatherData.hourly.slice(0, 24)}
+                  <DailyForecast
+                    data={weatherData.daily.map((day) => ({
+                      ...day,
+                      temperature: day.temp.day,
+                      windSpeed: day.wind_speed,
+                      condition: day.weather[0].main,
+                    }))}
+                    hourlyData={weatherData.hourly.map((hour) => ({
+                      ...hour,
+                      temperature: hour.temp,
+                      windSpeed: hour.wind_speed,
+                      condition: hour.weather[0].main,
+                    }))}
                   />
                 )}
               </Tab.Pane>

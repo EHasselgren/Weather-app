@@ -1,4 +1,3 @@
-import { Card } from "react-bootstrap";
 import { weatherInfoProps } from "../types/propTypes";
 import { interpretCondition } from "../utils/WeatherUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,7 +6,7 @@ export const WeatherInfo = ({ temperature, windSpeed, condition }) => {
   const weatherInfo = interpretCondition(condition);
 
   return (
-    <Card.Text>
+    <div>
       <div className="my-2">
         <strong>Temperatur:</strong> {temperature}°C
       </div>
@@ -26,7 +25,7 @@ export const WeatherInfo = ({ temperature, windSpeed, condition }) => {
           }}
         />
       </div>
-    </Card.Text>
+    </div>
   );
 };
 

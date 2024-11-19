@@ -18,7 +18,11 @@ function App() {
     setError(null);
     try {
       const data = await fetchWeatherFromSMHI(lat, lon);
-      setWeather(data);
+      setWeather({
+        temperature: data.temperature,
+        windSpeed: data.windSpeed,
+        condition: String(data.condition),
+      });
     } catch (err) {
       setError(err.message);
     }

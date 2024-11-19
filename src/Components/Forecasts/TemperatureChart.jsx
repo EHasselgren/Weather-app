@@ -2,8 +2,8 @@ import PropTypes from "prop-types";
 import { weatherInfoProps } from "../../types/propTypes";
 
 const TemperatureChart = ({ hourlyData }) => {
-  const validHourlyData = hourlyData.filter(hour => 
-    hour && typeof hour.temp === 'number' && !isNaN(hour.temp)
+  const validHourlyData = hourlyData.filter(
+    (hour) => hour && typeof hour.temp === "number" && !isNaN(hour.temp)
   );
 
   if (validHourlyData.length === 0) {
@@ -17,7 +17,7 @@ const TemperatureChart = ({ hourlyData }) => {
     );
   }
 
-  const temperatures = validHourlyData.map(hour => hour.temp);
+  const temperatures = validHourlyData.map((hour) => hour.temp);
   const minTemp = Math.floor(Math.min(...temperatures));
   const maxTemp = Math.ceil(Math.max(...temperatures));
   const range = maxTemp - minTemp || 1;
@@ -31,14 +31,14 @@ const TemperatureChart = ({ hourlyData }) => {
   const fillPoints = [
     "0,100",
     ...points.map((point) => {
-      const [x, y] = point.split(',');
-      return `${(x * 0.97)}%,${y}%`;
+      const [x, y] = point.split(",");
+      return `${x * 0.97}%,${y}%`;
     }),
-    "97,100"
+    "97,100",
   ].join(" ");
 
   // Generate time labels based on actual data
-  const timeLabels = validHourlyData.map(hour => {
+  const timeLabels = validHourlyData.map((hour) => {
     const date = new Date(hour.dt * 1000);
     return date.getHours();
   });
@@ -67,12 +67,12 @@ const TemperatureChart = ({ hourlyData }) => {
 
           <g transform="translate(25, 10)">
             {Array.from({ length: 6 }, (_, i) => {
-              const temp = maxTemp - (i * (range / 5));
+              const temp = maxTemp - i * (range / 5);
               return (
                 <text
                   key={i}
                   x="0"
-                  y={`${(i * 20)}%`}
+                  y={`${i * 20}%`}
                   className="scale-text-white"
                   dominantBaseline="middle"
                 >
@@ -85,21 +85,28 @@ const TemperatureChart = ({ hourlyData }) => {
           <g transform="translate(30, 10)">
             <defs>
               <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="rgb(239, 68, 68)" stopOpacity="0.2" />
-                <stop offset="100%" stopColor="rgb(239, 68, 68)" stopOpacity="0.05" />
+                <stop
+                  offset="0%"
+                  stopColor="rgb(239, 68, 68)"
+                  stopOpacity="0.2"
+                />
+                <stop
+                  offset="100%"
+                  stopColor="rgb(239, 68, 68)"
+                  stopOpacity="0.05"
+                />
               </linearGradient>
             </defs>
 
-            <polygon
-              points={fillPoints}
-              fill="url(#gradient)"
-            />
+            <polygon points={fillPoints} fill="url(#gradient)" />
 
             <polyline
-              points={points.map((point) => {
-                const [x, y] = point.split(',');
-                return `${(x * 0.97)}%,${y}%`;
-              }).join(' ')}
+              points={points
+                .map((point) => {
+                  const [x, y] = point.split(",");
+                  return `${x * 0.97}%,${y}%`;
+                })
+                .join(" ")}
               fill="none"
               stroke="rgb(239, 68, 68)"
               strokeWidth="2"
@@ -108,11 +115,11 @@ const TemperatureChart = ({ hourlyData }) => {
             />
 
             {points.map((point, i) => {
-              const [x, y] = point.split(',');
+              const [x, y] = point.split(",");
               return (
                 <circle
                   key={i}
-                  cx={`${(parseFloat(x) * 0.97)}%`}
+                  cx={`${parseFloat(x) * 0.97}%`}
                   cy={`${y}%`}
                   r="3"
                   fill="white"
