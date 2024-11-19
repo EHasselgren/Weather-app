@@ -13,6 +13,8 @@ import dayNightImage from "../media/phase.v1.png";
 import "../styles/weatherCard.css";
 import "../styles/DayNightBackground.css";
 
+const API_KEY = import.meta.env.OPEN_WEATHER_API_KEY;
+
 export const WeatherCard = ({
   weather,
   loading: externalLoading,
@@ -25,6 +27,7 @@ export const WeatherCard = ({
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+ 
 
   const updateRotation = () => {
     const hour = new Date().getHours();
@@ -33,12 +36,13 @@ export const WeatherCard = ({
     setRotation(newRotation);
   };
 
-  const fetchWeather = async () => {
+  const fetchWeather = async (lat,lon) => {
     try {
       setLoading(true);
       setError(null);
+
       const response = await fetch(
-        `https://api.openweathermap.org/data/3.0/onecall?lat=55.605&lon=13.0038&exclude=minutely,alerts&units=metric&appid=6c367f925c33f3acd180aa16e11c86fa`
+        `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,alerts&units=metric&appid=${API_KEY}`
       );
       
       if (!response.ok) {
@@ -58,11 +62,15 @@ export const WeatherCard = ({
 
   useEffect(() => {
     updateRotation();
-    fetchWeather();
+     // Get coordinates from the selected city
+     const { lat, lon } = cities[selectedCity];
+     fetchWeather(lat, lon);
     const interval = setInterval(updateRotation, 60 * 60 * 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [selectedCity]); // Add selectedCity as a dependency
 
+  
+  
   // Show loading state while fetching data
   if (externalLoading || loading) return <LoadingSpinner />;
   
