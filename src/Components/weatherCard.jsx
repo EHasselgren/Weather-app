@@ -113,13 +113,13 @@ export const WeatherCard = ({
                       ...day,
                       temperature: day.temp.day,
                       windSpeed: day.wind_speed,
-                      condition: day.weather[0].main,
+                      condition: String(day.weather[0].main),
                     }))}
                     hourlyData={weatherData.hourly.map((hour) => ({
                       ...hour,
                       temperature: hour.temp,
                       windSpeed: hour.wind_speed,
-                      condition: hour.weather[0].main,
+                      condition: String(hour.weather[0].main),
                     }))}
                   />
                 )}

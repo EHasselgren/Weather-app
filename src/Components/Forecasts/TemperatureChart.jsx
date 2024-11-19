@@ -23,21 +23,13 @@ const TemperatureChart = ({ hourlyData }) => {
   const range = maxTemp - minTemp || 1;
 
   const points = validHourlyData.map((hour, index) => {
-    const x = (index / (validHourlyData.length - 1)) * 100;
+    const x = (index / (validHourlyData.length - 1)) * 97;
     const y = 100 - ((hour.temp - minTemp) / range) * 100;
     return `${x},${y}`;
   });
 
-  const fillPoints = [
-    "0,100",
-    ...points.map((point) => {
-      const [x, y] = point.split(",");
-      return `${x * 0.97}%,${y}%`;
-    }),
-    "97,100",
-  ].join(" ");
+  const fillPoints = `0,100 ${points.join(" ")} 97,100`;
 
-  // Generate time labels based on actual data
   const timeLabels = validHourlyData.map((hour) => {
     const date = new Date(hour.dt * 1000);
     return date.getHours();
@@ -101,12 +93,7 @@ const TemperatureChart = ({ hourlyData }) => {
             <polygon points={fillPoints} fill="url(#gradient)" />
 
             <polyline
-              points={points
-                .map((point) => {
-                  const [x, y] = point.split(",");
-                  return `${x * 0.97}%,${y}%`;
-                })
-                .join(" ")}
+              points={points.join(" ")}
               fill="none"
               stroke="rgb(239, 68, 68)"
               strokeWidth="2"
@@ -119,8 +106,8 @@ const TemperatureChart = ({ hourlyData }) => {
               return (
                 <circle
                   key={i}
-                  cx={`${parseFloat(x) * 0.97}%`}
-                  cy={`${y}%`}
+                  cx={x}
+                  cy={y}
                   r="3"
                   fill="white"
                   stroke="rgb(239, 68, 68)"
