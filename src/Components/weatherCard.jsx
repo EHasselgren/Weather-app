@@ -20,8 +20,9 @@ export const WeatherCard = ({
   selectedCity,
   setSelectedCity,
 }) => {
-  const [rotation, setRotation] = useState(0); // ???
+  const [rotation, setRotation] = useState(0); 
   const [activeTab, setActiveTab] = useState('current');
+  const [weatherData, setWeatherData] = useState(null);
 
   const updateRotation = () => {
     const hour = new Date().getHours();
@@ -31,7 +32,7 @@ export const WeatherCard = ({
   };
 
   //funktion för att hantera att vi inte kan använda apiet 1000 ggr
-const staticWeatherData = {
+/* const staticWeatherData = {
   hourly: Array(48).fill(null).map((_, i) => ({
     dt: Math.floor(Date.now()/1000) + (i * 3600),
     temp: 20 + Math.sin(i/24 * Math.PI) * 5,
@@ -52,12 +53,13 @@ const staticWeatherData = {
     }],
     pop: Math.random()
   }))
-};
+}; */
 
-const fetchWeather = async (lat, lon) => {
+const fetchWeather = async () => {
   try {
     const response = await fetch(
-      `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,alerts&units=metric&appid=6c367f925c33f3acd180aa16e11c86fa`
+      //`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,alerts&units=metric&appid=6c367f925c33f3acd180aa16e11c86fa`
+      `https://api.openweathermap.org/data/3.0/onecall?lat=55.605&lon=13.0038&exclude=minutely,alerts&units=metric&appid=6c367f925c33f3acd180aa16e11c86fa`
     );
     
     if (!response.ok) {
@@ -76,6 +78,7 @@ const fetchWeather = async (lat, lon) => {
 
   useEffect(() => {
     updateRotation();
+    fetchWeather();
     const interval = setInterval(updateRotation, 60 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
@@ -115,8 +118,8 @@ const fetchWeather = async (lat, lon) => {
               </Tab.Pane>
               <Tab.Pane eventKey="forecast">
               <DailyForecast 
-          data={staticWeatherData.daily}
-          hourlyData={staticWeatherData.hourly}
+          data={weatherData.daily}
+          hourlyData={weatherData.hourly}
         />
               </Tab.Pane>
             </Tab.Content>
