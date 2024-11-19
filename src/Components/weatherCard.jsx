@@ -118,8 +118,9 @@ const fetchWeather = async () => {
               </Tab.Pane>
               <Tab.Pane eventKey="forecast">
               <DailyForecast 
-          data={weatherData.daily}
-          hourlyData={weatherData.hourly}
+          data={weatherData.daily.slice(0, 24)}
+          hourlyData={weatherData.hourly.slice(0, 24)}
+          
         />
               </Tab.Pane>
             </Tab.Content>
