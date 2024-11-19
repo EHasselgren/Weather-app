@@ -7,8 +7,8 @@ import {
   faCloudShowersHeavy,
   faBolt,
   faSnowflake,
-  faCloudBolt
-} from '@fortawesome/free-solid-svg-icons';
+  faCloudBolt,
+} from "@fortawesome/free-solid-svg-icons";
 
 export async function fetchWeatherFromSMHI(lat, lon) {
   // SMHI API URL för 10-dagars prognos
@@ -67,5 +67,7 @@ export function interpretCondition(symbolCode) {
     21: { text: "Kraftigt snöfall", icon: faSnowflake },
   };
 
-  return conditions[symbolCode] || { text: "Okänt väderförhållande", icon: faCloud };
+  return (
+    conditions[symbolCode] || { text: "Okänt väderförhållande", icon: faCloud }
+  );
 }
