@@ -10,6 +10,13 @@
   margin-bottom: 16px;
 }
 
+.temperature-chart-overlay {
+  position: fixed;
+  width: 100%;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 .chart-container {
   width: 100%;
   height: 300px;

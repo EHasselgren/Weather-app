@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useRef } from "react";
 import {
   faSun,
   faCloud,
@@ -13,7 +13,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import { weatherInfoProps } from "../../types/propTypes";
 import TemperatureChart from "./TemperatureChart";
-import "../../styles/dailyforecast.css";
 
 const COLORS = {
   highTemp: "#FF5733",
@@ -63,115 +62,130 @@ const getWeatherIcon = (description) => {
 
 export const DailyForecast = ({ data, hourlyData }) => {
   const [selectedDayIndex, setSelectedDayIndex] = useState(null);
+  const [chartTop, setChartTop] = useState(0);
+  const rowRefs = useRef([]);
 
   const handleDayClick = (index) => {
     if (index < 2) {
-      setSelectedDayIndex(selectedDayIndex === index ? null : index);
+      if (selectedDayIndex === index) {
+        setSelectedDayIndex(null);
+      } else {
+        const rowRect = rowRefs.current[index].getBoundingClientRect();
+        setChartTop(rowRect.height + rowRefs.current[index].offsetTop);
+        setSelectedDayIndex(index);
+      }
     }
   };
 
-  const getHourlyDataForDay = (dayIndex) => {
+  const getHourlyDataForDay = (index) => {
     if (!Array.isArray(hourlyData)) return [];
 
-    const dayStart = new Date(data[dayIndex].dt * 1000).setHours(0, 0, 0, 0);
-    const dayEnd = new Date(data[dayIndex].dt * 1000).setHours(23, 59, 59, 999);
+    const dayStart = new Date(data[index].dt * 1000).setHours(0, 0, 0, 0);
+    const dayEnd = new Date(data[index].dt * 1000).setHours(23, 59, 59, 999);
 
     return hourlyData.filter((hour) => {
       const hourTime = hour.dt * 1000;
       return hourTime >= dayStart && hourTime <= dayEnd;
     });
   };
+
   return (
     <div className="daily-forecast">
       <div className="table-responsive">
-        <table className="table table-hover mb-0">
+        <table className="table">
           <thead>
             <tr className="text-secondary">
-              <th className="py-2">Day</th>
-              <th className="py-2 d-none d-sm-table-cell">Condition</th>
-              <th className="py-2">
-                <FontAwesomeIcon
-                  icon={faTemperatureHigh}
-                  title="High Temperature"
-                  style={{ color: COLORS.highTemp }}
-                />
-                <span className="sr-only">High Temperature</span>
+              <th className="py-2 text-start w-24">Day</th>
+              <th className="py-2 d-none d-sm-table-cell text-start pl-16">Condition</th>
+              <th className="py-2 text-center w-16">
+                <div className="flex justify-center">
+                  <FontAwesomeIcon
+                    icon={faTemperatureHigh}
+                    title="High Temperature"
+                    style={{ color: COLORS.highTemp }}
+                  />
+                </div>
               </th>
-              <th className="py-2">
-                <FontAwesomeIcon
-                  icon={faTemperatureLow}
-                  title="Low Temperature"
-                  style={{ color: COLORS.lowTemp }}
-                />
-                <span className="sr-only">Low Temperature</span>
+              <th className="py-2 text-center w-16">
+                <div className="flex justify-center">
+                  <FontAwesomeIcon
+                    icon={faTemperatureLow}
+                    title="Low Temperature"
+                    style={{ color: COLORS.lowTemp }}
+                  />
+                </div>
               </th>
-              <th className="py-2">
-                <FontAwesomeIcon
-                  icon={faDroplet}
-                  title="Precipitation"
-                  style={{ color: COLORS.precipitation }}
-                />
-                <span className="sr-only">Precipitation</span>
+              <th className="py-2 text-center w-16">
+                <div className="flex justify-center">
+                  <FontAwesomeIcon
+                    icon={faDroplet}
+                    title="Precipitation"
+                    style={{ color: COLORS.precipitation }}
+                  />
+                </div>
               </th>
-              <th className="py-2 chevron-cell"></th>
+              <th className="py-2 w-8 text-center"></th>
             </tr>
           </thead>
           <tbody>
             {data.map((day, index) => (
-              <React.Fragment key={index}>
-                <tr
-                  onClick={() => handleDayClick(index)}
-                  className={`forecast-row ${
-                    selectedDayIndex === index ? "selected" : ""
-                  } ${index < 2 ? "has-hourly" : ""}`}
-                >
-                  <td className="py-2">
-                    {new Date(day.dt * 1000).toLocaleDateString("en-US", {
-                      weekday: "short",
-                    })}
-                  </td>
-                  <td className="condition py-2 d-none d-sm-table-cell">
-                    <div className="d-flex align-items-center">
+              <tr
+                key={index}
+                ref={el => rowRefs.current[index] = el}
+                onClick={() => handleDayClick(index)}
+                className={`forecast-row ${index < 2 ? "has-hourly" : ""} ${
+                  selectedDayIndex === index ? "selected" : ""
+                }`}
+              >
+                <td className="py-2 text-start">
+                  {new Date(day.dt * 1000).toLocaleDateString("en-US", {
+                    weekday: "short",
+                  })}
+                </td>
+                <td className="condition py-2 d-none d-sm-table-cell">
+                  <div className="flex items-center justify-center space-x-4">
+                    <span className="me-2">
                       {getWeatherIcon(day.weather[0].description)}
-                      <span className="ms-2">{day.weather[0].description}</span>
-                    </div>
-                  </td>
-                  <td className="py-2" style={{ color: COLORS.highTemp }}>
-                    {Math.round(day.temp.max)}°
-                  </td>
-                  <td className="py-2" style={{ color: COLORS.lowTemp }}>
-                    {Math.round(day.temp.min)}°
-                  </td>
-                  <td className="py-2" style={{ color: COLORS.precipitation }}>
-                    {day.pop ? `${Math.round(day.pop * 100)}%` : "0%"}
-                  </td>
-                  <td className="chevron-cell py-2">
-                    {index < 2 && (
-                      <FontAwesomeIcon
-                        icon={faChevronDown}
-                        className={`chevron-icon ${
-                          selectedDayIndex === index ? "rotate" : ""
-                        }`}
-                        style={{ color: COLORS.chevron }}
-                      />
-                    )}
-                  </td>
-                </tr>
-                {selectedDayIndex === index && index < 2 && (
-                  <tr className="chart-row">
-                    <td colSpan="6">
-                      <div className="p-3">
-                        <TemperatureChart
-                          hourlyData={getHourlyDataForDay(index)}
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </React.Fragment>
+                    </span>
+                    <span>{day.weather[0].description}</span>
+                  </div>
+                </td>
+                <td className="py-2 text-center" style={{ color: COLORS.highTemp }}>
+                  {Math.round(day.temp.max)}°
+                </td>
+                <td className="py-2 text-center" style={{ color: COLORS.lowTemp }}>
+                  {Math.round(day.temp.min)}°
+                </td>
+                <td className="py-2 text-center" style={{ color: COLORS.precipitation }}>
+                  {day.pop ? `${Math.round(day.pop * 100)}%` : "0%"}
+                </td>
+                <td className="py-2 text-center chevron-cell">
+                  {index < 2 && (
+                    <FontAwesomeIcon
+                      icon={faChevronDown}
+                      className={`chevron-icon ${
+                        selectedDayIndex === index ? "rotate" : ""
+                      }`}
+                      style={{ color: COLORS.chevron }}
+                    />
+                  )}
+                </td>
+              </tr>
             ))}
           </tbody>
         </table>
+        {selectedDayIndex !== null && selectedDayIndex < 2 && (
+          <div 
+            className="temperature-chart-overlay"
+            style={{ top: `${chartTop}px` }}
+          >
+            <div className="p-4">
+              <TemperatureChart
+                hourlyData={getHourlyDataForDay(selectedDayIndex)}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
