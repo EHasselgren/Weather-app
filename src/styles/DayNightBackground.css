@@ -9,8 +9,8 @@
 .day-night-image {
   position: absolute;
   top: -16%;  
-  width: 330px;
-  height: 330px;
+  width: 262px;
+  height: 262px;
   border-radius: 50%;
   transition: transform 1s linear;
 }
