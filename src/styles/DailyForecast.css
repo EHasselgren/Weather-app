@@ -2,6 +2,36 @@
   background-color: #ffffff;
   border-radius: 8px;
   color: black;
+  position: relative;
+  overflow: hidden;
+}
+
+.chart-row {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background: white;
+  z-index: 100;
+}
+
+.chart-row td {
+  position: relative;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.table-responsive {
+  position: relative;
+  overflow: visible !important;
+}
+
+.temperature-chart-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background-color: #f8f9fa;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: top 0.3s ease;
 }
 
 .daily-forecast .table {
