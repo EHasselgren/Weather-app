@@ -22,15 +22,13 @@ const TemperatureChart = ({ hourlyData }) => {
   const maxTemp = Math.ceil(Math.max(...temperatures));
   const range = maxTemp - minTemp || 1;
 
-  // Format points consistently without percentage signs
   const points = validHourlyData.map((hour, index) => {
-    const x = (index / (validHourlyData.length - 1)) * 97; // Apply 97% scaling here
+    const x = (index / (validHourlyData.length - 1)) * 97;
     const y = 100 - ((hour.temp - minTemp) / range) * 100;
     return `${x},${y}`;
   });
 
-  // Format fill points consistently
-  const fillPoints = `0,100 ${points.join(' ')} 97,100`;
+  const fillPoints = `0,100 ${points.join(" ")} 97,100`;
 
   const timeLabels = validHourlyData.map((hour) => {
     const date = new Date(hour.dt * 1000);
@@ -95,7 +93,7 @@ const TemperatureChart = ({ hourlyData }) => {
             <polygon points={fillPoints} fill="url(#gradient)" />
 
             <polyline
-              points={points.join(' ')}
+              points={points.join(" ")}
               fill="none"
               stroke="rgb(239, 68, 68)"
               strokeWidth="2"
