@@ -20,7 +20,7 @@ export const WeatherCard = ({
   selectedCity,
   setSelectedCity,
 }) => {
-  const [rotation, setRotation] = useState(0);
+  const [rotation, setRotation] = useState(0); // ???
   const [activeTab, setActiveTab] = useState('current');
 
   const updateRotation = () => {
@@ -52,6 +52,26 @@ const staticWeatherData = {
     }],
     pop: Math.random()
   }))
+};
+
+const fetchWeather = async (lat, lon) => {
+  try {
+    const response = await fetch(
+      `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,alerts&units=metric&appid=6c367f925c33f3acd180aa16e11c86fa`
+    );
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+    }
+    
+    const data = await response.json();
+    setWeatherData(data); // use state
+    // setLocation(cityName || location);
+    // setCoordinates({ lat, lon });
+  } catch (error) {
+    console.error('Detailed Fetch Error:', error);
+  }
 };
 
   useEffect(() => {
