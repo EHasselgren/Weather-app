@@ -8,6 +8,7 @@ import { LoadingSpinner } from "../components/LoadingSpinner";
 import { WeatherInfo } from "./WeatherInfo";
 import { weatherCardProps } from "../types/propTypes";
 import { WeatherNav } from './WeatherNav';
+import { DailyForecast } from '../components/Forecasts/DailyForecast' 
 import dayNightImage from "../media/phase.v1.png";
 import "../styles/weatherCard.css";
 import "../styles/DayNightBackground.css";
@@ -29,6 +30,30 @@ export const WeatherCard = ({
     setRotation(newRotation);
   };
 
+  //funktion för att hantera att vi inte kan använda apiet 1000 ggr
+const staticWeatherData = {
+  hourly: Array(48).fill(null).map((_, i) => ({
+    dt: Math.floor(Date.now()/1000) + (i * 3600),
+    temp: 20 + Math.sin(i/24 * Math.PI) * 5,
+    feels_like: 19 + Math.sin(i/24 * Math.PI) * 4,
+    weather: [{
+      description: ['clear sky', 'few clouds', 'scattered clouds', 'rain'][Math.floor(i/12) % 4]
+    }],
+    wind_speed: 2 + Math.random() * 3
+  })),
+  daily: Array(7).fill(null).map((_, i) => ({
+    dt: Math.floor(Date.now()/1000) + (i * 86400),
+    temp: {
+      min: 15 + Math.random() * 5,
+      max: 25 + Math.random() * 5
+    },
+    weather: [{
+      description: ['clear sky', 'few clouds', 'scattered clouds', 'rain'][i % 4]
+    }],
+    pop: Math.random()
+  }))
+};
+
   useEffect(() => {
     updateRotation();
     const interval = setInterval(updateRotation, 60 * 60 * 1000);
@@ -46,7 +71,7 @@ export const WeatherCard = ({
         className="day-night-image"
         style={{ transform: `rotate(${rotation}deg)` }}
       />
-      <Card style={{ width: "20rem" }}>
+      <Card style={{ width: "30rem" }}>
         <Card.Body>
           <Tab.Container activeKey={activeTab} onSelect={setActiveTab}>
             <WeatherNav activeKey={activeTab} onSelect={setActiveTab} />
@@ -69,7 +94,10 @@ export const WeatherCard = ({
                 />
               </Tab.Pane>
               <Tab.Pane eventKey="forecast">
-                  hejhej
+              <DailyForecast 
+          data={staticWeatherData.daily}
+          hourlyData={staticWeatherData.hourly}
+        />
               </Tab.Pane>
             </Tab.Content>
           </Tab.Container>
