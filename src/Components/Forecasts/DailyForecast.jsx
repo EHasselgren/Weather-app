@@ -78,82 +78,88 @@ export const DailyForecast = ({ data, hourlyData }) => {
 
   return (
     <div className="daily-forecast">
-      <table>
-        <thead>
-          <tr>
-            <th>Day</th>
-            <th>Condition</th>
-            <th>
-              <FontAwesomeIcon 
-                icon={faTemperatureHigh} 
-                title="High Temperature"
-                style={{ color: COLORS.highTemp }}
-              />
-              <span className="sr-only">High Temperature</span>
-            </th>
-            <th>
-              <FontAwesomeIcon 
-                icon={faTemperatureLow} 
-                title="Low Temperature"
-                style={{ color: COLORS.lowTemp }}
-              />
-              <span className="sr-only">Low Temperature</span>
-            </th>
-            <th>
-              <FontAwesomeIcon 
-                icon={faDroplet} 
-                title="Precipitation"
-                style={{ color: COLORS.precipitation }}
-              />
-              <span className="sr-only">Precipitation</span>
-            </th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((day, index) => (
-            <React.Fragment key={index}>
-              <tr
-                onClick={() => handleDayClick(index)}
-                className={`forecast-row ${selectedDayIndex === index ? 'selected' : ''} ${index < 2 ? 'has-hourly' : ''}`}
-              >
-                <td>
-                  {new Date(day.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' })}
-                </td>
-                <td className="condition">
-                  {getWeatherIcon(day.weather[0].description)}
-                  <span>{day.weather[0].description}</span>
-                </td>
-                <td className="high" style={{ color: COLORS.highTemp }}>
-                  {Math.round(day.temp.max)}°
-                </td>
-                <td className="low" style={{ color: COLORS.lowTemp }}>
-                  {Math.round(day.temp.min)}°
-                </td>
-                <td style={{ color: COLORS.precipitation }}>
-                  {day.pop ? `${Math.round(day.pop * 100)}%` : '0%'}
-                </td>
-                <td className="chevron-cell">
-                  {index < 2 && (
-                    <FontAwesomeIcon 
-                      icon={faChevronDown} 
-                      className={`chevron-icon ${selectedDayIndex === index ? 'rotate' : ''}`}
-                      style={{ color: COLORS.chevron }}
-                    />
-                  )}
-                </td>
-              </tr>
-              {selectedDayIndex === index && index < 2 && (
-                <tr className="chart-row">
-                  <td colSpan="6">
-                    <TemperatureChart hourlyData={getHourlyDataForDay(index)} />
+      <div className="table-responsive">
+        <table className="table table-hover mb-0">
+          <thead>
+            <tr className="text-secondary">
+              <th className="py-2">Day</th>
+              <th className="py-2 d-none d-sm-table-cell">Condition</th>
+              <th className="py-2">
+                <FontAwesomeIcon 
+                  icon={faTemperatureHigh} 
+                  title="High Temperature"
+                  style={{ color: COLORS.highTemp }}
+                />
+                <span className="sr-only">High Temperature</span>
+              </th>
+              <th className="py-2">
+                <FontAwesomeIcon 
+                  icon={faTemperatureLow} 
+                  title="Low Temperature"
+                  style={{ color: COLORS.lowTemp }}
+                />
+                <span className="sr-only">Low Temperature</span>
+              </th>
+              <th className="py-2">
+                <FontAwesomeIcon 
+                  icon={faDroplet} 
+                  title="Precipitation"
+                  style={{ color: COLORS.precipitation }}
+                />
+                <span className="sr-only">Precipitation</span>
+              </th>
+              <th className="py-2 chevron-cell"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((day, index) => (
+              <React.Fragment key={index}>
+                <tr
+                  onClick={() => handleDayClick(index)}
+                  className={`forecast-row ${selectedDayIndex === index ? 'selected' : ''} ${index < 2 ? 'has-hourly' : ''}`}
+                >
+                  <td className="py-2">
+                    {new Date(day.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' })}
+                  </td>
+                  <td className="condition py-2 d-none d-sm-table-cell">
+                    <div className="d-flex align-items-center">
+                      {getWeatherIcon(day.weather[0].description)}
+                      <span className="ms-2">{day.weather[0].description}</span>
+                    </div>
+                  </td>
+                  <td className="py-2" style={{ color: COLORS.highTemp }}>
+                    {Math.round(day.temp.max)}°
+                  </td>
+                  <td className="py-2" style={{ color: COLORS.lowTemp }}>
+                    {Math.round(day.temp.min)}°
+                  </td>
+                  <td className="py-2" style={{ color: COLORS.precipitation }}>
+                    {day.pop ? `${Math.round(day.pop * 100)}%` : '0%'}
+                  </td>
+                  <td className="chevron-cell py-2">
+                    {index < 2 && (
+                      <FontAwesomeIcon 
+                        icon={faChevronDown} 
+                        className={`chevron-icon ${selectedDayIndex === index ? 'rotate' : ''}`}
+                        style={{ color: COLORS.chevron }}
+                      />
+                    )}
                   </td>
                 </tr>
-              )}
-            </React.Fragment>
-          ))}
-        </tbody>
-      </table>
+                {selectedDayIndex === index && index < 2 && (
+                  <tr className="chart-row">
+                    <td colSpan="6">
+                      <div className="p-3">
+                        <TemperatureChart hourlyData={getHourlyDataForDay(index)} />
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
