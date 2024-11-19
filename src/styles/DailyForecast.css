@@ -1,7 +1,6 @@
 .daily-forecast {
   background-color: #ffffff;
   border-radius: 8px;
-  padding: 16px;
   color: black;
 }
 
@@ -13,7 +12,8 @@
 .daily-forecast table {
   width: 100%;
   text-align: left;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 .daily-forecast thead {
@@ -21,25 +21,26 @@
 }
 
 .daily-forecast th {
-  padding-bottom: 8px;
+  padding: 8px 16px 8px 16px;
   color: #888;
 }
 
 .daily-forecast tbody tr {
   border-bottom: 1px solid #333;
+}
+
+.daily-forecast tbody tr.has-hourly {
+  cursor: pointer;
   transition: background-color 0.3s ease;
+  border-radius: 6px;
 }
 
-.daily-forecast tbody tr:hover {
-  background-color: #f8f9fa;
-}
-
-.daily-forecast table tr:hover {
+.daily-forecast tbody tr.has-hourly:hover {
   background-color: #f8f9fa;
 }
 
 .daily-forecast td {
-  padding: 12px 0;
+  padding: 12px 16px;
 }
 
 .daily-forecast .condition {
@@ -81,17 +82,31 @@
   color: #4ecdc4;
 }
 
-.daily-forecast table tr {
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.daily-forecast table tr.selected {
+.daily-forecast tbody tr.selected {
   background-color: #f0f0f0;
 }
 
-.hourly-details {
+.daily-forecast .chevron-cell {
+  width: 24px;
+  text-align: center;
+  padding-right: 16px;
+}
+
+.daily-forecast .chevron-icon {
+  color: #888;
+  transition: transform 0.3s ease;
+}
+
+.daily-forecast .chevron-icon.rotate {
+  transform: rotate(180deg);
+}
+
+.daily-forecast .chart-row {
   background-color: #f5f5f5;
+}
+
+.daily-forecast .chart-row td {
+  padding: 16px;
 }
 
 .hourly-forecast-inline {
@@ -102,7 +117,8 @@
   width: 100%;
 }
 
-.hourly-forecast-inline th, .hourly-forecast-inline td {
+.hourly-forecast-inline th,
+.hourly-forecast-inline td {
   padding: 8px;
   border-bottom: 1px solid #ccc;
 }
