@@ -15,7 +15,6 @@ import { weatherInfoProps } from '../../types/propTypes';
 import TemperatureChart from './TemperatureChart';
 import '../../styles/dailyforecast.css';
 
-// Define colors as constants for consistency
 const COLORS = {
   highTemp: '#FF5733',
   lowTemp: '#33A1FF',
