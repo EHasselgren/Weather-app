@@ -10,6 +10,7 @@ const TemperatureChart = ({ hourlyData }) => {
   if (validHourlyData.length === 0) {
     return (
       <div className="temperature-chart">
+        <h2>Temperature Variation</h2>
         <div className="chart-container">
           <p>No temperature data available for this period</p>
         </div>
@@ -18,45 +19,32 @@ const TemperatureChart = ({ hourlyData }) => {
   }
 
   const temperatures = validHourlyData.map((hour) => hour.temp);
-  const minTemp = Math.min(...temperatures);
-  const maxTemp = Math.max(...temperatures);
+  const minTemp = Math.floor(Math.min(...temperatures));
+  const maxTemp = Math.ceil(Math.max(...temperatures));
   
-  // Function to determine optimal scale divisions
-  const getOptimalScale = (min, max) => {
-    const range = max - min;
-    let step;
-    
-    if (range <= 2) {
-      step = 0.5;
-    } else if (range <= 5) {
-      step = 1;
-    } else {
-      step = 2;
-    }
-    
-    // Adjust min and max to get clean values
-    const adjustedMin = Math.floor(min / step) * step;
-    const adjustedMax = Math.ceil(max / step) * step;
-    
-    // Generate scale values
-    const values = [];
-    for (let temp = adjustedMax; temp >= adjustedMin; temp -= step) {
-      values.push(Number(temp.toFixed(1))); // Ensure clean decimal values
-    }
-    
-    return {
-      min: adjustedMin,
-      max: adjustedMax,
-      values: values,
-      range: adjustedMax - adjustedMin
-    };
-  };
-
-  const scale = getOptimalScale(minTemp, maxTemp);
+  // Calculate optimal scale divisions
+  const range = maxTemp - minTemp;
+  const optimalDivisions = 5; // We want approximately 5 divisions
+  const rawStep = range / (optimalDivisions - 1);
+  
+  // Round the step to the nearest 0.5 if the range is small, otherwise to nearest 1
+  const step = range <= 5 ? Math.ceil(rawStep * 2) / 2 : Math.ceil(rawStep);
+  
+  // Adjust min and max to ensure they're multiples of the step
+  const adjustedMin = Math.floor(minTemp / step) * step;
+  const adjustedMax = Math.ceil(maxTemp / step) * step;
+  const adjustedRange = adjustedMax - adjustedMin;
+  
+  // Generate scale values
+  const scaleValues = [];
+  for (let temp = adjustedMax; temp >= adjustedMin; temp -= step) {
+    scaleValues.push(temp);
+  }
   
   const points = hourlyData.map((hour, index) => {
     const x = (index / (hourlyData.length - 1)) * 85 + 4;
-    const y = 95 - ((hour.temp - scale.min) / scale.range) * 80;
+    // Use adjusted range for y-axis calculation
+    const y = 95 - ((hour.temp - adjustedMin) / adjustedRange) * 80;
     return `${x},${y}`;
   });
 
@@ -83,29 +71,27 @@ const TemperatureChart = ({ hourlyData }) => {
         <svg className="chart-svg" preserveAspectRatio="xMinYMin meet">
           {/* Grid lines */}
           <g>
-            {scale.values.map((temp, i) => (
+            {scaleValues.map((temp, i) => (
               <line
                 key={i}
                 x1="30"
-                y1={`${(i * 80 / (scale.values.length - 1)) + 10}%`}
+                y1={`${(i * 80 / (scaleValues.length - 1))}%`}
                 x2="100%"
-                y2={`${(i * 80 / (scale.values.length - 1)) + 10}%`}
+                y2={`${(i * 80 / (scaleValues.length - 1))}%`}
                 stroke="#00e0ff"
                 strokeWidth="0.7"
               />
             ))}
           </g>
 
-          {/* Temperature labels */}
-          <g transform="translate(25, 0)">
-            {scale.values.map((temp, i) => (
+          <g transform="translate(25, 10)">
+            {scaleValues.map((temp, i) => (
               <text
                 key={i}
                 x="0"
-                y={`${(i * 80 / (scale.values.length - 1)) + 10}%`}
+                y={`${(i * 80 / (scaleValues.length - 1))}%`}
                 className="scale-text-white"
                 dominantBaseline="middle"
-                textAnchor="end"
               >
                 {temp}°
               </text>
@@ -147,8 +133,8 @@ const TemperatureChart = ({ hourlyData }) => {
 
             {points.map((point, i) => {
               const [x, y] = point.split(',');
-              const temp = hourlyData[i]?.temp || scale.min;
-              const relativeTemp = (temp - scale.min) / scale.range;
+              const temp = hourlyData[i]?.temp || minTemp; 
+              const relativeTemp = (temp - minTemp) / (maxTemp - minTemp);
               const clampedRelativeTemp = Math.min(Math.max(relativeTemp, 0), 1);
               const color = `rgb(
                 ${Math.round(255 * clampedRelativeTemp)}, 
