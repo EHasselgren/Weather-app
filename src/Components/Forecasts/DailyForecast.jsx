@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   faSun, 
   faCloud, 
@@ -63,9 +63,23 @@ const getWeatherIcon = (description) => {
 
 export const DailyForecast = ({ data, hourlyData }) => {
   const [selectedDayIndex, setSelectedDayIndex] = useState(null);
+  const [currentDayIndex, setCurrentDayIndex] = useState(null);
+
+  useEffect(() => {
+    // Get the current day index dynamically
+    const today = new Date();
+    const currentDay = data.findIndex(day => {
+      const forecastDate = new Date(day.dt * 1000);
+      return forecastDate.toDateString() === today.toDateString();
+    });
+
+    // Set the current day index
+    setCurrentDayIndex(currentDay);
+  }, [data]); // Re-run when data changes
 
   const handleDayClick = (index) => {
-    if (index < 2) {
+    // Only allow toggling of the chart for the current day
+    if (index === currentDayIndex) {
       setSelectedDayIndex(selectedDayIndex === index ? null : index);
     }
   };
@@ -116,7 +130,7 @@ export const DailyForecast = ({ data, hourlyData }) => {
               <React.Fragment key={index}>
                 <tr
                   onClick={() => handleDayClick(index)}
-                  className={`forecast-row ${selectedDayIndex === index ? 'selected' : ''} ${index < 2 ? 'has-hourly' : ''}`}
+                  className={`forecast-row ${selectedDayIndex === index ? 'selected' : ''}`}
                 >
                   <td className="py-2">
                     {new Date(day.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' })}
@@ -137,7 +151,7 @@ export const DailyForecast = ({ data, hourlyData }) => {
                     {day.pop ? `${Math.round(day.pop * 100)}%` : '0%'}
                   </td>
                   <td className="chevron-cell py-2">
-                    {index < 2 && (
+                    {index === currentDayIndex && (
                       <FontAwesomeIcon 
                         icon={faChevronDown} 
                         className={`chevron-icon ${selectedDayIndex === index ? 'rotate' : ''}`}
@@ -146,7 +160,7 @@ export const DailyForecast = ({ data, hourlyData }) => {
                     )}
                   </td>
                 </tr>
-                {selectedDayIndex === index && index < 2 && (
+                {selectedDayIndex === index && (
                   <tr className="chart-row">
                     <td colSpan="6">
                       <div className="p-3">

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/Seasonbackground.css';
 
+
 const SeasonBackground = () => {
   const [season, setSeason] = useState('');
 

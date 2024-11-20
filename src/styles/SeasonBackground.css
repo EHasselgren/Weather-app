@@ -13,7 +13,7 @@ body {
     pointer-events: none;
   }
   
-  /* SPRING - Flowers with random floating movement */
+  
   .background.spring .flower {
     position: absolute;
     width: 50px;
@@ -68,7 +68,7 @@ body {
     }
   }
   
-  /* SUMMER - Butterflies with random fluttering and flying movement */
+  
   .background.summer .butterfly {
     position: absolute;
     width: 40px;
@@ -130,14 +130,14 @@ body {
     }
   }
   
-  /* AUTUMN - Leaves with random falling and rotating movement */
+  
   .background.autumn .leaf {
     position: absolute;
     width: 40px;
     height: 40px;
     background-size: contain;
     background-repeat: no-repeat;
-    animation: fallLeaves 12s linear infinite; /* Increased duration for smoother fall */
+    animation: fallLeaves 12s linear infinite; 
     opacity: 0.9;
   }
   
@@ -196,14 +196,14 @@ body {
     }
   }
   
-  /* WINTER - Snowflakes with random falling and rotating movement */
+  
   .background.winter .snowflake {
     position: absolute;
     width: 30px;
     height: 30px;
     background-size: contain;
     background-repeat: no-repeat;
-    animation: snowFall 15s linear infinite; /* Increased duration for smoother fall */
+    animation: snowFall 15s linear infinite; 
     opacity: 0.8;
   }
   
