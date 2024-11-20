@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import { weatherInfoProps } from "../../types/propTypes";
+import '../../styles/TemperatureChart.css'
 
 const TemperatureChart = ({ hourlyData }) => {
   const temperatures = hourlyData.map(hour => hour.temp);
@@ -7,10 +8,12 @@ const TemperatureChart = ({ hourlyData }) => {
   const maxTemp = Math.ceil(Math.max(...temperatures));
   const range = maxTemp - minTemp;
 
+  
+  
   const points = hourlyData.map((hour, index) => {
     // Changed from (index / 23) to (index / (hourlyData.length - 1))
-    const x = (index / (hourlyData.length - 1)) * 100;
-    const y = 100 - ((hour.temp - minTemp) / range) * 100;
+    const x = (index / (hourlyData.length - 1)) * 85 + 4;
+    const y = 95 - ((hour.temp - minTemp) / range) * 100;
     return `${x},${y}`;
   });
 
@@ -25,9 +28,9 @@ const TemperatureChart = ({ hourlyData }) => {
 
   return (
     <div className="temperature-chart">
-      <h2>Temperature Variation</h2>
+      <h2>Temperaturvariation</h2>
       <div className="chart-container">
-        <svg className="chart-svg" preserveAspectRatio="none">
+        <svg className="chart-svg"  preserveAspectRatio="xMinYMin meet">
           {/* Grid lines */}
           <g>
             {Array.from({ length: 6 }, (_, i) => (
@@ -37,8 +40,8 @@ const TemperatureChart = ({ hourlyData }) => {
                 y1={`${i * 20}%`}
                 x2="100%"
                 y2={`${i * 20}%`}
-                stroke="#ccc"
-                strokeWidth="1"
+                stroke="#00e0ff"
+                strokeWidth="0.7"
               />
             ))}
           </g>
@@ -46,7 +49,7 @@ const TemperatureChart = ({ hourlyData }) => {
           {/* Temperature scale */}
           <g transform="translate(25, 10)">
             {Array.from({ length: 6 }, (_, i) => {
-              const temp = maxTemp - (i * (range / 5));
+              const temp = maxTemp - (i * (range / 5 ));
               return (
                 <text
                   key={i}
@@ -83,28 +86,36 @@ const TemperatureChart = ({ hourlyData }) => {
                 return `${(x * 0.97)}%,${y}%`;
               }).join(' ')}
               fill="none"
-              stroke="rgb(239, 68, 68)"
+              stroke="rgb(59, 130, 246)"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
 
-            {/* Data points */}
-            {points.map((point, i) => {
-              const [x, y] = point.split(',');
-              return (
-                <circle
-                  key={i}
-                  cx={`${(parseFloat(x) * 0.97)}%`}
-                  cy={`${y}%`}
-                  r="3"
-                  fill="white"
-                  stroke="rgb(239, 68, 68)"
-                  strokeWidth="2"
-                  className="hover:r-4 transition-all duration-200"
-                />
-              );
-            })}
+{points.map((point, i) => {
+  const [x, y] = point.split(',');
+  const temp = hourlyData[i]?.temp || minTemp; 
+  const relativeTemp = (temp - minTemp) / (maxTemp - minTemp);
+  const clampedRelativeTemp = Math.min(Math.max(relativeTemp, 0), 1);
+  const color = `rgb(
+    ${Math.round(255 * clampedRelativeTemp)}, 
+    0, 
+    ${Math.round(255 * (1 - clampedRelativeTemp))}
+  )`;
+
+  return (
+    <circle
+      key={i}
+      cx={`${(parseFloat(x) * 0.97)}%`}
+      cy={`${y}%`}
+      r="3" 
+      fill="white"
+      stroke={color}
+      strokeWidth="1"
+    />
+  );
+})}
+
           </g>
         </svg>
       </div>

@@ -7,21 +7,26 @@ import { ErrorDisplay } from "./ErrorDisplay";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { WeatherInfo } from "./WeatherInfo";
 import { weatherCardProps } from "../types/propTypes";
-import { WeatherNav } from './WeatherNav';
-import { DailyForecast } from '../components/Forecasts/DailyForecast' 
+import { WeatherNav } from "./WeatherNav";
+import { DailyForecast } from "../components/Forecasts/DailyForecast";
 import dayNightImage from "../media/phase.v1.png";
 import "../styles/weatherCard.css";
 import "../styles/DayNightBackground.css";
 
+const API_KEY = import.meta.env.VITE_OPEN_WEATHER_API_KEY;
+
 export const WeatherCard = ({
   weather,
-  loading,
-  error,
+  loading: externalLoading,
+  error: externalError,
   selectedCity,
   setSelectedCity,
 }) => {
   const [rotation, setRotation] = useState(0);
-  const [activeTab, setActiveTab] = useState('current');
+  const [activeTab, setActiveTab] = useState("current");
+  const [weatherData, setWeatherData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const updateRotation = () => {
     const hour = new Date().getHours();
@@ -30,38 +35,46 @@ export const WeatherCard = ({
     setRotation(newRotation);
   };
 
-  //funktion för att hantera att vi inte kan använda apiet 1000 ggr
-const staticWeatherData = {
-  hourly: Array(48).fill(null).map((_, i) => ({
-    dt: Math.floor(Date.now()/1000) + (i * 3600),
-    temp: 20 + Math.sin(i/24 * Math.PI) * 5,
-    feels_like: 19 + Math.sin(i/24 * Math.PI) * 4,
-    weather: [{
-      description: ['clear sky', 'few clouds', 'scattered clouds', 'rain'][Math.floor(i/12) % 4]
-    }],
-    wind_speed: 2 + Math.random() * 3
-  })),
-  daily: Array(7).fill(null).map((_, i) => ({
-    dt: Math.floor(Date.now()/1000) + (i * 86400),
-    temp: {
-      min: 15 + Math.random() * 5,
-      max: 25 + Math.random() * 5
-    },
-    weather: [{
-      description: ['clear sky', 'few clouds', 'scattered clouds', 'rain'][i % 4]
-    }],
-    pop: Math.random()
-  }))
-};
+  const fetchWeather = async (lat, lon) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await fetch(
+        `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,alerts&units=metric&appid=${API_KEY}`
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `HTTP error! status: ${response.status}, message: ${errorText}`
+        );
+      }
+
+      const data = await response.json();
+      setWeatherData(data);
+    } catch (error) {
+      console.error("Detailed Fetch Error:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     updateRotation();
+    const { lat, lon } = cities[selectedCity];
+    fetchWeather(lat, lon);
     const interval = setInterval(updateRotation, 60 * 60 * 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [selectedCity]);
 
-  if (loading) return <LoadingSpinner />;
-  if (error) return <ErrorDisplay message={error} />;
+  if (externalLoading || loading) return <LoadingSpinner />;
+
+  if (externalError || error)
+    return <ErrorDisplay message={externalError || error} />;
+
+  if (!weather) return <div>Loading weather data...</div>;
 
   return (
     <Container className="d-flex justify-content-center align-items-center">
@@ -71,7 +84,7 @@ const staticWeatherData = {
         className="day-night-image"
         style={{ transform: `rotate(${rotation}deg)` }}
       />
-      <Card style={{ width: "35rem" }}>
+      <Card style={{ width: "38rem" }}>
         <Card.Body>
           <Tab.Container activeKey={activeTab} onSelect={setActiveTab}>
             <WeatherNav activeKey={activeTab} onSelect={setActiveTab} />
@@ -94,10 +107,22 @@ const staticWeatherData = {
                 />
               </Tab.Pane>
               <Tab.Pane eventKey="forecast">
-              <DailyForecast 
-          data={staticWeatherData.daily}
-          hourlyData={staticWeatherData.hourly}
-        />
+                {weatherData && (
+                  <DailyForecast
+                    data={weatherData.daily.map((day) => ({
+                      ...day,
+                      temperature: day.temp.day,
+                      windSpeed: day.wind_speed,
+                      condition: String(day.weather[0].main),
+                    }))}
+                    hourlyData={weatherData.hourly.map((hour) => ({
+                      ...hour,
+                      temperature: hour.temp,
+                      windSpeed: hour.wind_speed,
+                      condition: String(hour.weather[0].main),
+                    }))}
+                  />
+                )}
               </Tab.Pane>
             </Tab.Content>
           </Tab.Container>
@@ -110,4 +135,3 @@ const staticWeatherData = {
 WeatherCard.propTypes = weatherCardProps;
 
 export default WeatherCard;
-
