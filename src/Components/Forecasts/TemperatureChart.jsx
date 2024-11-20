@@ -22,11 +22,17 @@ const TemperatureChart = ({ hourlyData }) => {
   const minTemp = Math.floor(Math.min(...temperatures));
   const maxTemp = Math.ceil(Math.max(...temperatures));
   const range = maxTemp - minTemp;
+
+  // Calculate evenly spaced temperature labels
+  const labelCount = 6; // Number of labels we want
+  const tempStep = range / (labelCount - 1);
+  const tempLabels = Array.from({ length: labelCount }, (_, i) => 
+    maxTemp - (i * tempStep)
+  );
   
   const points = hourlyData.map((hour, index) => {
-    // Changed from (index / 23) to (index / (hourlyData.length - 1))
     const x = (index / (hourlyData.length - 1)) * 85 + 4;
-    const y = 95 - ((hour.temp - minTemp) / range) * 100;
+    const y = 95 - ((hour.temp - minTemp) / range) * 80;
     return `${x},${y}`;
   });
 
@@ -53,7 +59,7 @@ const TemperatureChart = ({ hourlyData }) => {
         <svg className="chart-svg" preserveAspectRatio="xMinYMin meet">
           {/* Grid lines */}
           <g>
-            {Array.from({ length: 6 }, (_, i) => (
+            {tempLabels.map((temp, i) => (
               <line
                 key={i}
                 x1="30"
@@ -67,20 +73,17 @@ const TemperatureChart = ({ hourlyData }) => {
           </g>
 
           <g transform="translate(25, 10)">
-            {Array.from({ length: 6 }, (_, i) => {
-              const temp = maxTemp - (i * (range / 5));
-              return (
-                <text
-                  key={i}
-                  x="0"
-                  y={`${i * 20}%`}
-                  className="scale-text-white"
-                  dominantBaseline="middle"
-                >
-                  {Math.round(temp)}°
-                </text>
-              );
-            })}
+            {tempLabels.map((temp, i) => (
+              <text
+                key={i}
+                x="0"
+                y={`${i * 20}%`}
+                className="scale-text-white"
+                dominantBaseline="middle"
+              >
+                {Math.round(temp)}°
+              </text>
+            ))}
           </g>
 
           <g transform="translate(30, 10)">
