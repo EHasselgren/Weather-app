@@ -3,7 +3,22 @@ import { weatherInfoProps } from "../../types/propTypes";
 import '../../styles/TemperatureChart.css'
 
 const TemperatureChart = ({ hourlyData }) => {
-  const temperatures = hourlyData.map(hour => hour.temp);
+  const validHourlyData = hourlyData.filter(
+    (hour) => hour && typeof hour.temp === "number" && !isNaN(hour.temp)
+  );
+
+  if (validHourlyData.length === 0) {
+    return (
+      <div className="temperature-chart">
+        <h2>Temperature Variation</h2>
+        <div className="chart-container">
+          <p>No temperature data available for this period</p>
+        </div>
+      </div>
+    );
+  }
+
+  const temperatures = validHourlyData.map((hour) => hour.temp);
   const minTemp = Math.floor(Math.min(...temperatures));
   const maxTemp = Math.ceil(Math.max(...temperatures));
   const range = maxTemp - minTemp;
@@ -23,6 +38,14 @@ const TemperatureChart = ({ hourlyData }) => {
     }),
     "97,100"
   ].join(" ");
+
+  const timeLabels = validHourlyData.map((hour) => {
+    const date = new Date(hour.dt * 1000);
+    return date.getHours();
+  });
+
+  const firstHour = timeLabels[0];
+  const lastHour = timeLabels[timeLabels.length - 1];
 
   return (
     <div className="temperature-chart">
@@ -44,7 +67,6 @@ const TemperatureChart = ({ hourlyData }) => {
             ))}
           </g>
 
-          {/* Temperature scale */}
           <g transform="translate(25, 10)">
             {Array.from({ length: 6 }, (_, i) => {
               const temp = maxTemp - (i * (range / 5));
@@ -52,7 +74,7 @@ const TemperatureChart = ({ hourlyData }) => {
                 <text
                   key={i}
                   x="0"
-                  y={`${(i * 20)}%`}
+                  y={`${i * 20}%`}
                   className="scale-text-white"
                   dominantBaseline="middle"
                 >
@@ -62,22 +84,27 @@ const TemperatureChart = ({ hourlyData }) => {
             })}
           </g>
 
-          {/* Temperature curve with gradient fill */}
           <g transform="translate(30, 10)">
             <defs>
               <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="rgb(239, 68, 68)" stopOpacity="0.2" />
-                <stop offset="100%" stopColor="rgb(239, 68, 68)" stopOpacity="0.05" />
+                <stop
+                  offset="0%"
+                  stopColor="rgb(239, 68, 68)"
+                  stopOpacity="0.2"
+                />
+                <stop
+                  offset="100%"
+                  stopColor="rgb(239, 68, 68)"
+                  stopOpacity="0.05"
+                />
               </linearGradient>
             </defs>
 
-            {/* Gradient fill */}
             <polygon
               points={fillPoints}
               fill="url(#gradient)"
             />
 
-            {/* Temperature line */}
             <polyline
               points={points.map((point) => {
                 const [x, y] = point.split(',');
@@ -118,11 +145,11 @@ const TemperatureChart = ({ hourlyData }) => {
       </div>
 
       <div className="time-labels">
-        <span>00</span>
-        <span>06</span>
-        <span>12</span>
-        <span>18</span>
-        <span>24</span>
+        <span>{firstHour}:00</span>
+        <span>{Math.round((lastHour - firstHour) * 0.25) + firstHour}:00</span>
+        <span>{Math.round((lastHour - firstHour) * 0.5) + firstHour}:00</span>
+        <span>{Math.round((lastHour - firstHour) * 0.75) + firstHour}:00</span>
+        <span>{lastHour}:00</span>
       </div>
     </div>
   );
