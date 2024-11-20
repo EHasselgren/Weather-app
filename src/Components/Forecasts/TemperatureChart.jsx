@@ -7,8 +7,6 @@ const TemperatureChart = ({ hourlyData }) => {
   const minTemp = Math.floor(Math.min(...temperatures));
   const maxTemp = Math.ceil(Math.max(...temperatures));
   const range = maxTemp - minTemp;
-
-  
   
   const points = hourlyData.map((hour, index) => {
     // Changed from (index / 23) to (index / (hourlyData.length - 1))
@@ -30,7 +28,7 @@ const TemperatureChart = ({ hourlyData }) => {
     <div className="temperature-chart">
       <h2>Temperaturvariation</h2>
       <div className="chart-container">
-        <svg className="chart-svg"  preserveAspectRatio="xMinYMin meet">
+        <svg className="chart-svg" preserveAspectRatio="xMinYMin meet">
           {/* Grid lines */}
           <g>
             {Array.from({ length: 6 }, (_, i) => (
@@ -49,7 +47,7 @@ const TemperatureChart = ({ hourlyData }) => {
           {/* Temperature scale */}
           <g transform="translate(25, 10)">
             {Array.from({ length: 6 }, (_, i) => {
-              const temp = maxTemp - (i * (range / 5 ));
+              const temp = maxTemp - (i * (range / 5));
               return (
                 <text
                   key={i}
@@ -92,30 +90,29 @@ const TemperatureChart = ({ hourlyData }) => {
               strokeLinejoin="round"
             />
 
-{points.map((point, i) => {
-  const [x, y] = point.split(',');
-  const temp = hourlyData[i]?.temp || minTemp; 
-  const relativeTemp = (temp - minTemp) / (maxTemp - minTemp);
-  const clampedRelativeTemp = Math.min(Math.max(relativeTemp, 0), 1);
-  const color = `rgb(
-    ${Math.round(255 * clampedRelativeTemp)}, 
-    0, 
-    ${Math.round(255 * (1 - clampedRelativeTemp))}
-  )`;
+            {points.map((point, i) => {
+              const [x, y] = point.split(',');
+              const temp = hourlyData[i]?.temp || minTemp; 
+              const relativeTemp = (temp - minTemp) / (maxTemp - minTemp);
+              const clampedRelativeTemp = Math.min(Math.max(relativeTemp, 0), 1);
+              const color = `rgb(
+                ${Math.round(255 * clampedRelativeTemp)}, 
+                0, 
+                ${Math.round(255 * (1 - clampedRelativeTemp))}
+              )`;
 
-  return (
-    <circle
-      key={i}
-      cx={`${(parseFloat(x) * 0.97)}%`}
-      cy={`${y}%`}
-      r="3" 
-      fill="white"
-      stroke={color}
-      strokeWidth="1"
-    />
-  );
-})}
-
+              return (
+                <circle
+                  key={i}
+                  cx={`${(parseFloat(x) * 0.97)}%`}
+                  cy={`${y}%`}
+                  r="3" 
+                  fill="white"
+                  stroke={color}
+                  strokeWidth="1"
+                />
+              );
+            })}
           </g>
         </svg>
       </div>
