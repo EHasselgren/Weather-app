@@ -1,49 +1,49 @@
-import React, { useState } from 'react';
-import { 
-  faSun, 
-  faCloud, 
-  faCloudRain, 
+import React, { useState } from "react";
+import {
+  faSun,
+  faCloud,
+  faCloudRain,
   faCloudShowersHeavy,
   faTemperatureHigh,
   faTemperatureLow,
   faDroplet,
-  faChevronDown
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import PropTypes from 'prop-types';
-import { weatherInfoProps } from '../../types/propTypes';
-import TemperatureChart from './TemperatureChart';
-import '../../styles/dailyforecast.css';
+  faChevronDown,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import PropTypes from "prop-types";
+import { weatherInfoProps } from "../../types/propTypes";
+import TemperatureChart from "./TemperatureChart";
+import "../../styles/dailyforecast.css";
 
 const COLORS = {
-  highTemp: '#FF5733',
-  lowTemp: '#33A1FF',
-  sun: '#FFD700',
-  cloud: '#8BA4B4',
-  rain: '#4682B4',
-  snow: '#B4CFEC',
-  chevron: '#666666',
-  precipitation: '#4682B4'
+  highTemp: "#FF5733",
+  lowTemp: "#33A1FF",
+  sun: "#FFD700",
+  cloud: "#8BA4B4",
+  rain: "#4682B4",
+  snow: "#B4CFEC",
+  chevron: "#666666",
+  precipitation: "#4682B4",
 };
 
 const getWeatherIcon = (description) => {
   const lowercaseDesc = description.toLowerCase();
   let icon, color;
-  
+
   switch (true) {
-    case lowercaseDesc.includes('clear'):
+    case lowercaseDesc.includes("clear"):
       icon = faSun;
       color = COLORS.sun;
       break;
-    case lowercaseDesc.includes('cloud'):
+    case lowercaseDesc.includes("cloud"):
       icon = faCloud;
       color = COLORS.cloud;
       break;
-    case lowercaseDesc.includes('rain'):
+    case lowercaseDesc.includes("rain"):
       icon = faCloudRain;
       color = COLORS.rain;
       break;
-    case lowercaseDesc.includes('snow'):
+    case lowercaseDesc.includes("snow"):
       icon = faCloudShowersHeavy;
       color = COLORS.snow;
       break;
@@ -53,9 +53,9 @@ const getWeatherIcon = (description) => {
   }
 
   return (
-    <FontAwesomeIcon 
-      icon={icon} 
-      className={`icon ${lowercaseDesc.split(' ')[0]}`}
+    <FontAwesomeIcon
+      icon={icon}
+      className={`icon ${lowercaseDesc.split(" ")[0]}`}
       style={{ color }}
     />
   );
@@ -71,11 +71,16 @@ export const DailyForecast = ({ data, hourlyData }) => {
   };
 
   const getHourlyDataForDay = (dayIndex) => {
-    const startOfDay = dayIndex * 24;
-    const endOfDay = startOfDay + 24;
-    return hourlyData.slice(startOfDay, endOfDay);
-  };
+    if (!Array.isArray(hourlyData)) return [];
 
+    const dayStart = new Date(data[dayIndex].dt * 1000).setHours(0, 0, 0, 0);
+    const dayEnd = new Date(data[dayIndex].dt * 1000).setHours(23, 59, 59, 999);
+
+    return hourlyData.filter((hour) => {
+      const hourTime = hour.dt * 1000;
+      return hourTime >= dayStart && hourTime <= dayEnd;
+    });
+  };
   return (
     <div className="daily-forecast">
       <div className="table-responsive">
@@ -85,24 +90,24 @@ export const DailyForecast = ({ data, hourlyData }) => {
               <th className="py-2">Day</th>
               <th className="py-2 d-none d-sm-table-cell">Condition</th>
               <th className="py-2">
-                <FontAwesomeIcon 
-                  icon={faTemperatureHigh} 
+                <FontAwesomeIcon
+                  icon={faTemperatureHigh}
                   title="High Temperature"
                   style={{ color: COLORS.highTemp }}
                 />
                 <span className="sr-only">High Temperature</span>
               </th>
               <th className="py-2">
-                <FontAwesomeIcon 
-                  icon={faTemperatureLow} 
+                <FontAwesomeIcon
+                  icon={faTemperatureLow}
                   title="Low Temperature"
                   style={{ color: COLORS.lowTemp }}
                 />
                 <span className="sr-only">Low Temperature</span>
               </th>
               <th className="py-2">
-                <FontAwesomeIcon 
-                  icon={faDroplet} 
+                <FontAwesomeIcon
+                  icon={faDroplet}
                   title="Precipitation"
                   style={{ color: COLORS.precipitation }}
                 />
@@ -116,10 +121,14 @@ export const DailyForecast = ({ data, hourlyData }) => {
               <React.Fragment key={index}>
                 <tr
                   onClick={() => handleDayClick(index)}
-                  className={`forecast-row ${selectedDayIndex === index ? 'selected' : ''} ${index < 2 ? 'has-hourly' : ''}`}
+                  className={`forecast-row ${
+                    selectedDayIndex === index ? "selected" : ""
+                  } ${index < 2 ? "has-hourly" : ""}`}
                 >
                   <td className="py-2">
-                    {new Date(day.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' })}
+                    {new Date(day.dt * 1000).toLocaleDateString("en-US", {
+                      weekday: "short",
+                    })}
                   </td>
                   <td className="condition py-2 d-none d-sm-table-cell">
                     <div className="d-flex align-items-center">
@@ -134,13 +143,15 @@ export const DailyForecast = ({ data, hourlyData }) => {
                     {Math.round(day.temp.min)}°
                   </td>
                   <td className="py-2" style={{ color: COLORS.precipitation }}>
-                    {day.pop ? `${Math.round(day.pop * 100)}%` : '0%'}
+                    {day.pop ? `${Math.round(day.pop * 100)}%` : "0%"}
                   </td>
                   <td className="chevron-cell py-2">
                     {index < 2 && (
-                      <FontAwesomeIcon 
-                        icon={faChevronDown} 
-                        className={`chevron-icon ${selectedDayIndex === index ? 'rotate' : ''}`}
+                      <FontAwesomeIcon
+                        icon={faChevronDown}
+                        className={`chevron-icon ${
+                          selectedDayIndex === index ? "rotate" : ""
+                        }`}
                         style={{ color: COLORS.chevron }}
                       />
                     )}
@@ -150,7 +161,9 @@ export const DailyForecast = ({ data, hourlyData }) => {
                   <tr className="chart-row">
                     <td colSpan="6">
                       <div className="p-3">
-                        <TemperatureChart hourlyData={getHourlyDataForDay(index)} />
+                        <TemperatureChart
+                          hourlyData={getHourlyDataForDay(index)}
+                        />
                       </div>
                     </td>
                   </tr>
@@ -168,5 +181,5 @@ export default DailyForecast;
 
 DailyForecast.propTypes = {
   data: PropTypes.arrayOf(PropTypes.shape(weatherInfoProps)).isRequired,
-  hourlyData: PropTypes.arrayOf(PropTypes.shape(weatherInfoProps)).isRequired
+  hourlyData: PropTypes.arrayOf(PropTypes.shape(weatherInfoProps)).isRequired,
 };
