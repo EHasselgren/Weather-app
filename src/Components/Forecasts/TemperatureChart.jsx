@@ -52,19 +52,17 @@ const TemperatureChart = ({ hourlyData }) => {
     "97,100"
   ].join(" ");
 
-  const timeLabels = validHourlyData.map((hour) => {
+  const timeLabels = validHourlyData.map(hour => {
     const date = new Date(hour.dt * 1000);
-    return date.getHours();
+    return `${date.getHours()}:00`;
   });
-
-  const firstHour = timeLabels[0];
-  const lastHour = timeLabels[timeLabels.length - 1];
 
   return (
     <div className="temperature-chart">
       <div className="chart-container">
         <svg className="chart-svg" preserveAspectRatio="xMinYMin meet">
-          <g transform="translate(25, 10)">
+          {/* Temperature values with reduced left margin */}
+          <g transform="translate(10, 10)">
             {scaleValues.map((temp, i) => (
               <text
                 key={i}
@@ -78,7 +76,8 @@ const TemperatureChart = ({ hourlyData }) => {
             ))}
           </g>
 
-          <g transform="translate(45, 0)">
+          {/* Grid lines with adjusted starting position */}
+          <g transform="translate(30, 0)">
             {scaleValues.map((temp, i) => (
               <line
                 key={i}
@@ -92,7 +91,7 @@ const TemperatureChart = ({ hourlyData }) => {
             ))}
           </g>
 
-          <g transform="translate(30, 10)">
+          <g transform="translate(15, 10)">
             <defs>
               <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
                 <stop
@@ -150,14 +149,12 @@ const TemperatureChart = ({ hourlyData }) => {
             })}
           </g>
         </svg>
-      </div>
 
-      <div className="time-labels">
-        <span>{firstHour}:00</span>
-        <span>{Math.round((lastHour - firstHour) * 0.25) + firstHour}:00</span>
-        <span>{Math.round((lastHour - firstHour) * 0.5) + firstHour}:00</span>
-        <span>{Math.round((lastHour - firstHour) * 0.75) + firstHour}:00</span>
-        <span>{lastHour}:00</span>
+        <div className="time-labels">
+          {timeLabels.map((label, i) => (
+            <span key={i}>{label}</span>
+          ))}
+        </div>
       </div>
     </div>
   );
