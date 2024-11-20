@@ -18,28 +18,29 @@ const TemperatureChart = ({ hourlyData }) => {
     );
   }
 
+  // Get exact min and max temperatures for point mapping
   const temperatures = validHourlyData.map((hour) => hour.temp);
-  const minTemp = Math.floor(Math.min(...temperatures));
-  const maxTemp = Math.ceil(Math.max(...temperatures));
+  const exactMinTemp = Math.min(...temperatures);
+  const exactMaxTemp = Math.max(...temperatures);
   
-  const range = maxTemp - minTemp;
-  const optimalDivisions = 5; 
-  const rawStep = range / (optimalDivisions - 1);
-  const step = range <= 5 ? Math.ceil(rawStep * 2) / 2 : Math.ceil(rawStep);
+  // Create rounded scale values for display
+  const floorTemp = Math.floor(exactMinTemp);
+  const ceilTemp = Math.ceil(exactMaxTemp);
   
-  const adjustedMin = Math.floor(minTemp / step) * step;
-  const adjustedMax = Math.ceil(maxTemp / step) * step;
-  const adjustedRange = adjustedMax - adjustedMin;
-  
+  // Create simple scale with whole numbers
   const scaleValues = [];
-  for (let temp = adjustedMax; temp >= adjustedMin; temp -= step) {
+  for (let temp = ceilTemp; temp >= floorTemp; temp--) {
     scaleValues.push(temp);
   }
   
+  // Map points using exact temperature values
   const points = validHourlyData.map((hour, index) => {
     const x = (index / (validHourlyData.length - 1)) * 85 + 4;
-    const normalizedTemp = (hour.temp - adjustedMin) / adjustedRange;
-    const y = 95 - (normalizedTemp * 80);
+    
+    // Use exact min/max for point positioning
+    const tempPercentage = (exactMaxTemp - hour.temp) / (exactMaxTemp - exactMinTemp);
+    const y = 10 + (tempPercentage * 80);
+    
     return `${x},${y}`;
   });
 
@@ -92,7 +93,7 @@ const TemperatureChart = ({ hourlyData }) => {
             ))}
           </g>
 
-          <g transform="translate(15, 10)">
+          <g transform="translate(15, 0)">
             <defs>
               <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
                 <stop
@@ -127,8 +128,8 @@ const TemperatureChart = ({ hourlyData }) => {
 
             {points.map((point, i) => {
               const [x, y] = point.split(',');
-              const temp = validHourlyData[i]?.temp || minTemp; 
-              const relativeTemp = (temp - minTemp) / (maxTemp - minTemp);
+              const temp = validHourlyData[i]?.temp || exactMinTemp;
+              const relativeTemp = (temp - exactMinTemp) / (exactMaxTemp - exactMinTemp);
               const clampedRelativeTemp = Math.min(Math.max(relativeTemp, 0), 1);
               const color = `rgb(
                 ${Math.round(255 * clampedRelativeTemp)}, 
@@ -141,7 +142,7 @@ const TemperatureChart = ({ hourlyData }) => {
                   key={i}
                   cx={`${(parseFloat(x) * 0.97)}%`}
                   cy={`${y}%`}
-                  r="3" 
+                  r="3"
                   fill="white"
                   stroke={color}
                   strokeWidth="1"
