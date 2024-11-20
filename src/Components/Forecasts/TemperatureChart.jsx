@@ -70,6 +70,7 @@ const TemperatureChart = ({ hourlyData }) => {
                 y={`${(i * 80 / (scaleValues.length - 1))}%`}
                 className="scale-text-white"
                 dominantBaseline="middle"
+                textAnchor="middle"
               >
                 {temp}°
               </text>

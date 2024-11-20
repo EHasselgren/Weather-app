@@ -4,6 +4,8 @@
   height: auto;
   margin: 0 auto; 
   overflow: hidden;
+  margin-left: -2rem;
+
 }
 
   .chart-svg {
