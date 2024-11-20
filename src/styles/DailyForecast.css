@@ -2,10 +2,68 @@
   background-color: #ffffff;
   border-radius: 8px;
   color: black;
+  position: relative;
+  overflow: hidden;
 }
 
 .daily-forecast .table {
   margin-bottom: 0;
+  text-align: center;
+}
+
+.daily-forecast .table thead th {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.daily-forecast .table thead th:first-child,
+.daily-forecast .table tbody td:first-child {
+  text-align: left;
+}
+
+.daily-forecast .table thead th:nth-child(2) {
+  text-align: left;
+}
+
+.daily-forecast .table tbody td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.daily-forecast .condition {
+  text-align: left !important;
+}
+
+.daily-forecast .condition .d-flex {
+  justify-content: flex-start;
+}
+
+.chart-row {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background: white;
+  z-index: 100;
+}
+
+.chart-row td {
+  position: relative;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.table-responsive {
+  position: relative;
+  overflow: visible !important;
+}
+
+.temperature-chart-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background-color: #f8f9fa;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: top 0.3s ease;
 }
 
 .daily-forecast .table > :not(caption) > * > * {
