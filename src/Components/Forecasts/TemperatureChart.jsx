@@ -24,18 +24,16 @@ const TemperatureChart = ({ hourlyData }) => {
   
   // Calculate optimal scale divisions
   const range = maxTemp - minTemp;
-  const optimalDivisions = 5; // We want approximately 5 divisions
+  const optimalDivisions = 5; 
   const rawStep = range / (optimalDivisions - 1);
   
   // Round the step to the nearest 0.5 if the range is small, otherwise to nearest 1
   const step = range <= 5 ? Math.ceil(rawStep * 2) / 2 : Math.ceil(rawStep);
   
-  // Adjust min and max to ensure they're multiples of the step
   const adjustedMin = Math.floor(minTemp / step) * step;
   const adjustedMax = Math.ceil(maxTemp / step) * step;
   const adjustedRange = adjustedMax - adjustedMin;
   
-  // Generate scale values
   const scaleValues = [];
   for (let temp = adjustedMax; temp >= adjustedMin; temp -= step) {
     scaleValues.push(temp);
