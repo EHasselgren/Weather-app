@@ -1,47 +1,60 @@
-.temperature-chart {
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 16px;
-  color: black;
-  margin-top: 16px;
-}
-.temperature-chart h2 {
-  font-size: 1.25rem;
-  margin-bottom: 16px;
-}
-
-.temperature-chart-overlay {
-  position: fixed;
-  width: 100%;
-  background: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
 
 .chart-container {
-  width: 100%;
-  height: 300px;
+  width: 140%;
+  height: auto;
+  margin: 0 auto; 
+  overflow: hidden;
+  margin-left: -2rem;
+
 }
 
-.chart-svg {
-  width: 100%;
-  height: 100%;
-}
+  .chart-svg {
+    width: 100%;
+    height: auto;
+  }
+  
+  .scale-text {
+    fill: rgb(0, 0, 0);
+    font-size: 12px;
+  }
+  
+  .scale-text-white {
+    fill: rgb(0, 0, 0);
+    font-size: 12px;
+  }
+  
+  .time-labels {
+    display: flex;
+    justify-content: space-between;
+    color: #888;
+    font-size: 12px;
+    margin-top: 8px;
+    padding: 0 30px;
+  } 
 
-.scale-text {
-  fill: white;
-  font-size: 12px;
-}
-
-.scale-text-white {
-  fill: white;
-  font-size: 12px;
-}
-
-.time-labels {
-  display: flex;
-  justify-content: space-between;
-  color: #888;
-  font-size: 12px;
-  margin-top: 8px;
-  padding: 0 30px;
-}
+  .temperature-chart h2 {
+    font-size: 1vw; 
+    text-align: center;
+    margin: 1rem 0;
+    color: #333; 
+    font-weight: bold;
+  }
+  
+  @media (max-width: 1024px) {
+    .temperature-chart h2 {
+      font-size: 2vw;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .temperature-chart h2 {
+      font-size: 3vw; 
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .temperature-chart h2 {
+      font-size: 4vw; 
+    }
+  }
+  

@@ -84,7 +84,7 @@ export const DailyForecast = ({ data, hourlyData }) => {
   return (
     <div className="daily-forecast">
       <div className="table-responsive">
-        <table className="table table-hover mb-0">
+        <table className="table  mb-0">
           <thead>
             <tr className="text-secondary">
               <th className="py-2">Day</th>

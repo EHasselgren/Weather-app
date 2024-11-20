@@ -1,5 +1,7 @@
 import PropTypes from "prop-types";
 import { weatherInfoProps } from "../../types/propTypes";
+import '../../styles/TemperatureChart.css'
+
 
 const TemperatureChart = ({ hourlyData }) => {
   const validHourlyData = hourlyData.filter(
@@ -9,7 +11,6 @@ const TemperatureChart = ({ hourlyData }) => {
   if (validHourlyData.length === 0) {
     return (
       <div className="temperature-chart">
-        <h2>Temperature Variation</h2>
         <div className="chart-container">
           <p>No temperature data available for this period</p>
         </div>
@@ -18,114 +19,128 @@ const TemperatureChart = ({ hourlyData }) => {
   }
 
   const temperatures = validHourlyData.map((hour) => hour.temp);
-  const minTemp = Math.floor(Math.min(...temperatures));
-  const maxTemp = Math.ceil(Math.max(...temperatures));
-  const range = maxTemp - minTemp || 1;
+  const exactMinTemp = Math.min(...temperatures);
+  const exactMaxTemp = Math.max(...temperatures);
+  
+  const floorTemp = Math.floor(exactMinTemp);
+  const ceilTemp = Math.ceil(exactMaxTemp);
+  
+  const scaleValues = [];
+  for (let temp = ceilTemp; temp >= floorTemp; temp--) {
+    scaleValues.push(temp);
+  }
 
   const points = validHourlyData.map((hour, index) => {
-    const x = (index / (validHourlyData.length - 1)) * 97;
-    const y = 100 - ((hour.temp - minTemp) / range) * 100;
+    const x = (index / (validHourlyData.length - 1)) * 85 + 4;
+    
+    const tempRange = ceilTemp - floorTemp;
+    const normalizedTemp = (ceilTemp - hour.temp) / tempRange;
+    const y = 10 + (normalizedTemp * 80);
+    
     return `${x},${y}`;
   });
 
-  const fillPoints = `0,100 ${points.join(" ")} 97,100`;
+  const fillPoints = [
+    "0,100",
+    ...points.map((point) => {
+      const [x, y] = point.split(',');
+      return `${(x * 0.97)}%,${y}%`;
+    }),
+    "97,100"
+  ].join(" ");
 
-  const timeLabels = validHourlyData.map((hour) => {
+  const timeLabels = validHourlyData.map(hour => {
     const date = new Date(hour.dt * 1000);
-    return date.getHours();
+    return `${date.getHours()}:00`;
   });
-
-  const firstHour = timeLabels[0];
-  const lastHour = timeLabels[timeLabels.length - 1];
 
   return (
     <div className="temperature-chart">
-      <h2>Temperature Variation</h2>
       <div className="chart-container">
-        <svg className="chart-svg" preserveAspectRatio="none">
-          <g>
-            {Array.from({ length: 6 }, (_, i) => (
+        <svg className="chart-svg" preserveAspectRatio="xMinYMin meet">
+          {/* Temperature scale */}
+          <g transform="translate(10, 10)">
+            {scaleValues.map((temp, i) => (
+              <text
+                key={i}
+                x="0"
+                y={`${(i * 80 / (scaleValues.length - 1))}%`}
+                className="scale-text-white"
+                dominantBaseline="middle"
+                textAnchor="middle"
+              >
+                {temp}°
+              </text>
+            ))}
+          </g>
+
+          {/* Grid lines */}
+          <g transform="translate(30, 0)">
+            {scaleValues.map((temp, i) => (
               <line
                 key={i}
-                x1="30"
-                y1={`${i * 20}%`}
+                x1="0"
+                y1={`${(i * 80 / (scaleValues.length - 1)) + 10}%`}
                 x2="100%"
-                y2={`${i * 20}%`}
-                stroke="#ccc"
-                strokeWidth="1"
+                y2={`${(i * 80 / (scaleValues.length - 1)) + 10}%`}
+                stroke="#00e0ff"
+                strokeWidth="0.7"
               />
             ))}
           </g>
 
-          <g transform="translate(25, 10)">
-            {Array.from({ length: 6 }, (_, i) => {
-              const temp = maxTemp - i * (range / 5);
-              return (
-                <text
-                  key={i}
-                  x="0"
-                  y={`${i * 20}%`}
-                  className="scale-text-white"
-                  dominantBaseline="middle"
-                >
-                  {Math.round(temp)}°
-                </text>
-              );
-            })}
-          </g>
-
-          <g transform="translate(30, 10)">
+          <g transform="translate(15, 0)">
             <defs>
               <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="0%"
-                  stopColor="rgb(239, 68, 68)"
-                  stopOpacity="0.2"
-                />
-                <stop
-                  offset="100%"
-                  stopColor="rgb(239, 68, 68)"
-                  stopOpacity="0.05"
-                />
+                <stop offset="0%" stopColor="rgb(239, 68, 68)" stopOpacity="0.2" />
+                <stop offset="100%" stopColor="rgb(239, 68, 68)" stopOpacity="0.05" />
               </linearGradient>
             </defs>
 
             <polygon points={fillPoints} fill="url(#gradient)" />
 
             <polyline
-              points={points.join(" ")}
+              points={points.map((point) => {
+                const [x, y] = point.split(',');
+                return `${(x * 0.97)}%,${y}%`;
+              }).join(' ')}
               fill="none"
-              stroke="rgb(239, 68, 68)"
+              stroke="rgb(59, 130, 246)"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
 
             {points.map((point, i) => {
-              const [x, y] = point.split(",");
+              const [x, y] = point.split(',');
+              const temp = validHourlyData[i].temp;
+              const normalizedTemp = (temp - floorTemp) / (ceilTemp - floorTemp);
+              const color = `rgb(
+                ${Math.round(255 * normalizedTemp)}, 
+                0, 
+                ${Math.round(255 * (1 - normalizedTemp))}
+              )`;
+
               return (
                 <circle
                   key={i}
-                  cx={x}
-                  cy={y}
+                  cx={`${(x * 0.97)}%`}
+                  cy={`${y}%`}
                   r="3"
                   fill="white"
-                  stroke="rgb(239, 68, 68)"
-                  strokeWidth="2"
-                  className="hover:r-4 transition-all duration-200"
+                  stroke={color}
+                  strokeWidth="1"
                 />
               );
             })}
           </g>
         </svg>
-      </div>
 
-      <div className="time-labels">
-        <span>{firstHour}:00</span>
-        <span>{Math.round((lastHour - firstHour) * 0.25) + firstHour}:00</span>
-        <span>{Math.round((lastHour - firstHour) * 0.5) + firstHour}:00</span>
-        <span>{Math.round((lastHour - firstHour) * 0.75) + firstHour}:00</span>
-        <span>{lastHour}:00</span>
+        <div className="time-labels">
+          {timeLabels.map((label, i) => (
+            <span key={i}>{label}</span>
+          ))}
+        </div>
       </div>
     </div>
   );
