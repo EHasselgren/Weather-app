@@ -49,7 +49,6 @@ const TemperatureChart = ({ hourlyData }) => {
 
   return (
     <div className="temperature-chart">
-      <h2>Temperaturvariation</h2>
       <div className="chart-container">
         <svg className="chart-svg" preserveAspectRatio="xMinYMin meet">
           {/* Grid lines */}
