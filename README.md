@@ -1,8 +1,34 @@
-# React + Vite
+# Swedish Weather App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based weather application that displays current conditions and forecasts for major Swedish cities.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Real-time weather data from OpenWeather API
+- Current conditions and 7-day forecast
+- Temperature visualization charts
+- City selection (Stockholm, Göteborg, Malmö)
+- Seasonal background animations
+- Responsive design
+- Swedish language interface
+
+## Prerequisites
+
+- OpenWeather API key
+- Google Maps API key
+
+## Configuration
+
+Create `.env` file:
+```
+VITE_OPEN_WEATHER_API_KEY=your_key_here
+VITE_GOOGLE_MAPS_API_KEY=your_key_here
+```
+
+## Dependencies
+
+- React + Vite
+- React Bootstrap
+- FontAwesome
+- OpenWeather API
+- Google Maps Static API
