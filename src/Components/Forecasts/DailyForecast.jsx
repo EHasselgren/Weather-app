@@ -26,6 +26,16 @@ const COLORS = {
   precipitation: "#4682B4",
 };
 
+const SWEDISH_DAYS = {
+  'Mon': 'Mån',
+  'Tue': 'Tis',
+  'Wed': 'Ons',
+  'Thu': 'Tors',
+  'Fri': 'Fre',
+  'Sat': 'Lör',
+  'Sun': 'Sön'
+};
+
 const getWeatherIcon = (description) => {
   const lowercaseDesc = description.toLowerCase();
   let icon, color;
@@ -61,6 +71,15 @@ const getWeatherIcon = (description) => {
   );
 };
 
+const getSwedishDay = (timestamp) => {
+  // First get the English abbreviated day
+  const englishDay = new Date(timestamp * 1000).toLocaleDateString("en-US", {
+    weekday: "short",
+  });
+  // Convert to Swedish using our mapping
+  return SWEDISH_DAYS[englishDay] || englishDay;
+};
+
 export const DailyForecast = ({ data, hourlyData }) => {
   const [selectedDayIndex, setSelectedDayIndex] = useState(null);
 
@@ -81,37 +100,38 @@ export const DailyForecast = ({ data, hourlyData }) => {
       return hourTime >= dayStart && hourTime <= dayEnd;
     });
   };
+
   return (
     <div className="daily-forecast">
       <div className="table-responsive">
-        <table className="table  mb-0">
+        <table className="table mb-0">
           <thead>
             <tr className="text-secondary">
-              <th className="py-2">Day</th>
-              <th className="py-2 d-none d-sm-table-cell">Condition</th>
+              <th className="py-2">Dag</th>
+              <th className="py-2 d-none d-sm-table-cell">Väderlek</th>
               <th className="py-2">
                 <FontAwesomeIcon
                   icon={faTemperatureHigh}
-                  title="High Temperature"
+                  title="Högsta temperatur"
                   style={{ color: COLORS.highTemp }}
                 />
-                <span className="sr-only">High Temperature</span>
+                <span className="sr-only">Högsta temperatur</span>
               </th>
               <th className="py-2">
                 <FontAwesomeIcon
                   icon={faTemperatureLow}
-                  title="Low Temperature"
+                  title="Lägsta temperatur"
                   style={{ color: COLORS.lowTemp }}
                 />
-                <span className="sr-only">Low Temperature</span>
+                <span className="sr-only">Lägsta temperatur</span>
               </th>
               <th className="py-2">
                 <FontAwesomeIcon
                   icon={faDroplet}
-                  title="Precipitation"
+                  title="Nederbörd"
                   style={{ color: COLORS.precipitation }}
                 />
-                <span className="sr-only">Precipitation</span>
+                <span className="sr-only">Nederbörd</span>
               </th>
               <th className="py-2 chevron-cell"></th>
             </tr>
@@ -126,9 +146,7 @@ export const DailyForecast = ({ data, hourlyData }) => {
                   } ${index < 2 ? "has-hourly" : ""}`}
                 >
                   <td className="py-2">
-                    {new Date(day.dt * 1000).toLocaleDateString("en-US", {
-                      weekday: "short",
-                    })}
+                    {getSwedishDay(day.dt)}
                   </td>
                   <td className="condition py-2 d-none d-sm-table-cell">
                     <div className="d-flex align-items-center">
