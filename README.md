@@ -7,7 +7,7 @@ A React-based weather application that displays current conditions and forecasts
 - Real-time weather data from OpenWeather API
 - Current conditions and 7-day forecast
 - Temperature visualization charts
-- City selection (Stockholm, Göteborg, Malmö)
+- City selection (Stockholm, Göteborg, Malmö and more)
 - Seasonal background animations
 - Responsive design
 - Swedish language interface
