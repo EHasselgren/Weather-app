@@ -41,8 +41,8 @@ export const WeatherCard = ({
       setError(null);
 
       const response = await fetch(
-        `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,alerts&units=metric&appid=${API_KEY}`
-      );
+          `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,alerts&lang=SE&units=metric&appid=${API_KEY}`
+       );
 
       if (!response.ok) {
         const errorText = await response.text();
